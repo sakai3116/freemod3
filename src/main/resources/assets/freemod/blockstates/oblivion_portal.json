@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "axis=z": { "model": "freemod:block/oblivion_portal_ew" },
+    "axis=x": { "model": "freemod:block/oblivion_portal_ns" }
+  }
+}

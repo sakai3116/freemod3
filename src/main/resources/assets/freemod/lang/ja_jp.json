@@ -1,6 +1,10 @@
 {
   "itemGroup.freemod_tab" : "フリーモッドタブ",
 
-  "itemGroup.freemod_block_tab" : "フリーモッドブロックタブ"
+  "itemGroup.freemod_block_tab" : "フリーモッドブロックタブ",
+
+  "block.freemod.oblivion_portal_gate_block" : "失われたポータルブロック",
+
+  "item.freemod.world_line" : "？？？"
 
 }

@@ -2,8 +2,11 @@ package com.FREEMOD.freemod.main;
 
 import com.FREEMOD.freemod.main.tab.FreeModBlockTab;
 import com.FREEMOD.freemod.main.tab.FreeModTab;
+import com.FREEMOD.freemod.register.BiomeRegister;
 import com.FREEMOD.freemod.register.BlockRegister;
 import com.FREEMOD.freemod.register.ItemRegister;
+import com.FREEMOD.freemod.villager.ModPOIs;
+import com.FREEMOD.freemod.world.dimension.ModDimensions;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +32,13 @@ public class FreeMod {
         BlockRegister.register(eventBus);
         //アイテムの登録
         ItemRegister.register(eventBus);
-        
+
+        //ディメンションの登録
+        ModDimensions.register();
+        //バイオームの登録
+        BiomeRegister.register(eventBus);
+        //
+        ModPOIs.register(eventBus);
 
     }
     private void commonSetup(final FMLCommonSetupEvent event) {

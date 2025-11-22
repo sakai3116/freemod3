@@ -1,6 +1,10 @@
 {
  "itemGroup.freemod_tab" : "Free Mod Tab",
 
- "itemGroup.freemod_block_tab" : "Free Mod Block Tab"
+ "itemGroup.freemod_block_tab" : "Free Mod Block Tab",
+
+ "block.freemod.oblivion_portal_gate_block" : "Oblivion Portal Block",
+
+ "item.freemod.world_line" : "？？？"
 
 }
