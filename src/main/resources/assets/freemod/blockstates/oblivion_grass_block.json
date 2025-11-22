@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "freemod:block/oblivion_grass_block"
+      },
+      {
+        "model": "freemod:block/oblivion_grass_block",
+        "y": 90
+      },
+      {
+        "model": "freemod:block/oblivion_grass_block",
+        "y": 180
+      },
+      {
+        "model": "freemod:block/oblivion_grass_block",
+        "y": 270
+      }
+    ]
+  }
+}

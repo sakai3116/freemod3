@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "freemod:block/oblivion_stone"
+      },
+      {
+        "model": "freemod:block/oblivion_stone",
+        "y": 180
+      }
+    ]
+  }
+}

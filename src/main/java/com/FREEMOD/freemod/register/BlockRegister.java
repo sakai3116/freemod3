@@ -1,10 +1,12 @@
 package com.FREEMOD.freemod.register;
 
+import com.FREEMOD.freemod.block.portal.OblivionPortalBlock;
 import com.FREEMOD.freemod.main.FreeMod;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -30,6 +32,9 @@ public class BlockRegister {
     // ore
 
     // other
+    public static final RegistryObject<Block> OBLIVION_PORTAL_GATE_BLOCK = registerBlockItem("oblivion_portal_gate_block",
+            () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
+    public static final RegistryObject<Block> OBLIVION_PORTAL_BLOCK = BLOCKS.register("oblivion_portal", OblivionPortalBlock::new);
 
     // ブロックアイテム作成用メソッド 基本的に触らない
     private static <T extends Block> RegistryObject<T> registerBlockItem(String name, Supplier<T> supplier) {

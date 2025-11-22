@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "freemod:block/oblivion_dirt"
+      },
+      {
+        "model": "freemod:block/oblivion_dirt",
+        "y": 90
+      },
+      {
+        "model": "freemod:block/oblivion_dirt",
+        "y": 180
+      },
+      {
+        "model": "freemod:block/oblivion_dirt",
+        "y": 270
+      }
+    ]
+  }
+}

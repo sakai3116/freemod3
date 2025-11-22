@@ -1,6 +1,15 @@
 {
   "itemGroup.freemod_tab" : "フリーモッドタブ",
 
-  "itemGroup.freemod_block_tab" : "フリーモッドブロックタブ"
+  "itemGroup.freemod_block_tab" : "フリーモッドブロックタブ",
 
+  "block.freemod.oblivion_portal_gate_block" : "失われたポータルブロック",
+
+  "item.freemod.world_line" : "？？？",
+
+  "block.freemod.oblivion_grass_block" :  "失われた草ブロック",
+
+  "block.freemod.oblivion_dirt" :  "失われた土ブロック",
+
+  "block.freemod.oblivion_stone" :  "失われた石"
 }

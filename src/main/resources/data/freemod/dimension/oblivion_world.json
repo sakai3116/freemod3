@@ -1,0 +1,37 @@
+{
+  "type": "freemod:oblivion_world",
+  "generator": {
+    "type": "minecraft:noise",
+    "seed": -6385214431549959000,
+    "settings": "freemod:oblivion_world",
+    "biome_source": {
+      "type": "minecraft:multi_noise",
+      "biomes": [
+        {
+          "biome": "minecraft:plains",
+          "parameters": {
+            "temperature": 0.8,
+            "humidity": 0.55,
+            "continentalness": 0.19,
+            "erosion": 0.25,
+            "weirdness": 0.12,
+            "depth": 0.3,
+            "offset": 0.04
+          }
+        },
+        {
+          "biome": "freemod:oblivion_mountains",
+          "parameters": {
+            "temperature": 0.71,
+            "humidity": 0.48,
+            "continentalness": 0.33,
+            "erosion": 0.13,
+            "weirdness": 0.22,
+            "depth": 0.44,
+            "offset": 0.05
+          }
+        }
+      ]
+    }
+  }
+}

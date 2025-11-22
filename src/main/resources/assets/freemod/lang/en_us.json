@@ -1,6 +1,15 @@
 {
  "itemGroup.freemod_tab" : "Free Mod Tab",
 
- "itemGroup.freemod_block_tab" : "Free Mod Block Tab"
+ "itemGroup.freemod_block_tab" : "Free Mod Block Tab",
 
+ "block.freemod.oblivion_portal_gate_block" : "Oblivion Portal Block",
+
+ "item.freemod.world_line" : "？？？",
+
+ "block.freemod.oblivion_grass_block" :  "Oblivion Grass Block",
+
+ "block.freemod.oblivion_dirt" :  "Oblivion Dirt",
+
+ "block.freemod.oblivion_stone" :  "Oblivion Stone"
 }
