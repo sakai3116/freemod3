@@ -1,5 +1,6 @@
 package com.FREEMOD.freemod.main;
 
+import com.FREEMOD.freemod.effect.ModEffects;
 import com.FREEMOD.freemod.main.tab.FreeModBlockTab;
 import com.FREEMOD.freemod.main.tab.FreeModTab;
 import com.FREEMOD.freemod.register.*;
@@ -43,6 +44,9 @@ public class FreeMod {
 
         // feature
         ConfiguredFeatureRegister.register(eventBus);
+
+        //effect
+        ModEffects.register(eventBus);
 
     }
     private void commonSetup(final FMLCommonSetupEvent event) {
