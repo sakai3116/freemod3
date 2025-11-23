@@ -25,5 +25,7 @@
 
   "block.freemod.oblivion_leaves" : "失われた葉",
 
-  "block.freemod.oblivion_sapling" : "失われた苗木"
+  "block.freemod.oblivion_sapling" : "失われた苗木",
+
+  "item.freemod.acid_bucket" : "酸のバケツ"
 }

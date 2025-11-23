@@ -1,6 +1,7 @@
 package com.FREEMOD.freemod.main;
 
 import com.FREEMOD.freemod.effect.ModEffects;
+import com.FREEMOD.freemod.fluid.AcidFluid;
 import com.FREEMOD.freemod.main.tab.FreeModBlockTab;
 import com.FREEMOD.freemod.main.tab.FreeModTab;
 import com.FREEMOD.freemod.register.*;
@@ -11,7 +12,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-
 
 @Mod("freemod")
 public class FreeMod {
@@ -38,15 +38,15 @@ public class FreeMod {
         BiomeRegister.register(eventBus);
         //ポイントオブインスタンスの登録（POI）
         ModPOIs.register(eventBus);
-
         // placed
         PlacedFeatureRegister.register(eventBus);
-
         // feature
         ConfiguredFeatureRegister.register(eventBus);
-
         //effect
         ModEffects.register(eventBus);
+
+        //独自の登録
+        AcidFluid.register(eventBus);
 
     }
     private void commonSetup(final FMLCommonSetupEvent event) {
