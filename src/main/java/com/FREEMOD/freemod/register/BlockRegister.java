@@ -38,7 +38,7 @@ public class BlockRegister {
             () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG)));
     public static final RegistryObject<RotatedPillarBlock> STRIPPED_OBLIVION_WOOD = registerBlockItem("stripped_oblivion_wood",
             () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG)));
-    public static final RegistryObject<Block> OBLIVION_PLANK = registerBlockItem("oblivion_plank",
+    public static final RegistryObject<Block> OBLIVION_PLANK = registerBlockItem("oblivion_planks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistryObject<Block> OBLIVION_LEAVES = registerBlockItem("oblivion_leaves",
             () -> new LeavesBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LEAVES)));
