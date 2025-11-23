@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "freemod:block/stripped_oblivion_top",
+    "side": "freemod:block/stripped_oblivion_log"
+  }
+}

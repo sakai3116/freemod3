@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "freemod:oblivion_log",
+    "freemod:oblivion_wood",
+    "freemod:stripped_oblivion_log",
+    "freemod:stripped_oblivion_wood"
+  ]
+}
