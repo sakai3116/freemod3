@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "freemod:block/oblivion_log_top",
+    "side": "freemod:block/oblivion_log"
+  }
+}

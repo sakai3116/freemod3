@@ -11,5 +11,19 @@
 
  "block.freemod.oblivion_dirt" :  "Oblivion Dirt",
 
- "block.freemod.oblivion_stone" :  "Oblivion Stone"
+ "block.freemod.oblivion_stone" :  "Oblivion Stone",
+
+ "block.freemod.oblivion_log" : "Oblivion log",
+
+ "block.freemod.oblivion_wood" : "Oblivion Wood",
+
+ "block.freemod.stripped_oblivion_log" : "Stripped Oblivion log",
+
+ "block.freemod.stripped_oblivion_wood" : "Stripped Oblivion Wood",
+
+ "block.freemod.oblivion_planks" : "Oblivion Plank",
+
+ "block.freemod.oblivion_leaves" : "Oblivion Leaves",
+
+ "block.freemod.oblivion_sapling" : "Oblivion Sapling"
 }

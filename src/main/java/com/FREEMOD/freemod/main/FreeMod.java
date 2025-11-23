@@ -2,9 +2,7 @@ package com.FREEMOD.freemod.main;
 
 import com.FREEMOD.freemod.main.tab.FreeModBlockTab;
 import com.FREEMOD.freemod.main.tab.FreeModTab;
-import com.FREEMOD.freemod.register.BiomeRegister;
-import com.FREEMOD.freemod.register.BlockRegister;
-import com.FREEMOD.freemod.register.ItemRegister;
+import com.FREEMOD.freemod.register.*;
 import com.FREEMOD.freemod.villager.ModPOIs;
 import com.FREEMOD.freemod.world.dimension.ModDimensions;
 import net.minecraft.world.item.CreativeModeTab;
@@ -37,8 +35,14 @@ public class FreeMod {
         ModDimensions.register();
         //バイオームの登録
         BiomeRegister.register(eventBus);
-        //
+        //ポイントオブインスタンスの登録（POI）
         ModPOIs.register(eventBus);
+
+        // placed
+        PlacedFeatureRegister.register(eventBus);
+
+        // feature
+        ConfiguredFeatureRegister.register(eventBus);
 
     }
     private void commonSetup(final FMLCommonSetupEvent event) {

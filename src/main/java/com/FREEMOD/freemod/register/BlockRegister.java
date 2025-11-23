@@ -1,7 +1,9 @@
 package com.FREEMOD.freemod.register;
 
+import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
 import com.FREEMOD.freemod.block.portal.OblivionPortalBlock;
 import com.FREEMOD.freemod.main.FreeMod;
+import com.FREEMOD.freemod.world.feature.tree.OblivionGrower;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -28,6 +30,20 @@ public class BlockRegister {
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE)));
 
     // tree
+    public static final RegistryObject<RotatedPillarBlock> OBLIVION_LOG = registerBlockItem("oblivion_log",
+            () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
+    public static final RegistryObject<RotatedPillarBlock> OBLIVION_WOOD = registerBlockItem("oblivion_wood",
+            () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
+    public static final RegistryObject<RotatedPillarBlock> STRIPPED_OBLIVION_LOG = registerBlockItem("stripped_oblivion_log",
+            () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG)));
+    public static final RegistryObject<RotatedPillarBlock> STRIPPED_OBLIVION_WOOD = registerBlockItem("stripped_oblivion_wood",
+            () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.STRIPPED_OAK_LOG)));
+    public static final RegistryObject<Block> OBLIVION_PLANK = registerBlockItem("oblivion_planks",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+    public static final RegistryObject<Block> OBLIVION_LEAVES = registerBlockItem("oblivion_leaves",
+            () -> new LeavesBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LEAVES)));
+    public static final RegistryObject<SaplingBlock> OBLIVION_SAPLING = registerBlockItem("oblivion_sapling",
+            () -> new SaplingBlock(new OblivionGrower(),BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)));
 
     // ore
 
