@@ -3,6 +3,7 @@ package com.FREEMOD.freemod.register;
 import com.FREEMOD.freemod.fluid.AcidFluid;
 import com.FREEMOD.freemod.item.tool.WorldLineItem;
 import com.FREEMOD.freemod.main.FreeMod;
+import com.FREEMOD.freemod.main.tab.FreeModTab;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,6 +19,10 @@ public class ItemRegister {
     public static final RegistryObject<Item> WORLD_LINE = ITEMS.register("world_line", WorldLineItem::new);
     public static final RegistryObject<Item> ACID_BUCKET = ITEMS.register("acid_bucket",
             () -> new BucketItem(AcidFluid.ACID_FLUID,new Item.Properties().tab(FreeMod.FREEMOD_TAB).stacksTo(1)));
+    public static final RegistryObject<Item> PLATINUM = ITEMS.register("platinum",
+            () -> new Item(new Item.Properties().tab(FreeMod.FREEMOD_TAB)));
+    public static final RegistryObject<Item> PLATINUM_INGOT = ITEMS.register("platinum_ingot",
+            () -> new Item(new Item.Properties().tab(FreeMod.FREEMOD_TAB)));
 
 
 

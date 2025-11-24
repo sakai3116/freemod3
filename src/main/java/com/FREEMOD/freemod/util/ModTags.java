@@ -14,6 +14,8 @@ public class ModTags {
         public static final TagKey<Block> OBLIVION_PORTAL_FRAME_BLOCKS
                 = tag("oblivion_portal_frame_blocks");
 
+        public static final TagKey<Block> PLATINUM_ORE_REPLACEABLES = tag("platinum_ore_replaceables");
+
         private static TagKey<Block> tag(String name) {
             return BlockTags.create(new ResourceLocation(FreeMod.MOD_ID, name));
         }

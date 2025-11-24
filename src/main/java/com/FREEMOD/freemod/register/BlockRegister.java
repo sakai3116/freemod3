@@ -4,6 +4,7 @@ import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
 import com.FREEMOD.freemod.block.portal.OblivionPortalBlock;
 import com.FREEMOD.freemod.main.FreeMod;
 import com.FREEMOD.freemod.world.feature.tree.OblivionGrower;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -46,6 +47,12 @@ public class BlockRegister {
             () -> new SaplingBlock(new OblivionGrower(),BlockBehaviour.Properties.copy(Blocks.OAK_SAPLING)));
 
     // ore
+    public static final RegistryObject<Block> PLATINUM_ORE = registerBlockItem("platinum_ore",
+            () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE) //part 40 UniformInt.of(3,7)の追加　経験値ドロップ
+                    .strength(5f).requiresCorrectToolForDrops(), UniformInt.of(3,7)));
+    public static final RegistryObject<Block> DEEPSLATE_PLATINUM_ORE = registerBlockItem("deepslate_platinum_ore",
+            () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE) //part 40 UniformInt.of(3,7)の追加　経験値ドロップ
+                    .strength(5f).requiresCorrectToolForDrops(), UniformInt.of(3,7)));
 
     // other
     public static final RegistryObject<Block> OBLIVION_PORTAL_GATE_BLOCK = registerBlockItem("oblivion_portal_gate_block",

@@ -1,6 +1,8 @@
 {
     "replace": false,
     "values": [
-      "freemod:oblivion_stone"
+      "freemod:oblivion_stone",
+      "freemod:platinum_ore",
+      "freemod:deepslate_platinum_ore"
     ]
 }

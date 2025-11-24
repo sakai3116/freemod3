@@ -7,6 +7,10 @@
 
   "item.freemod.world_line" : "？？？",
 
+  "block.freemod.platinum_ore" : "プラチナ鉱石",
+
+  "block.freemod.deepslate_platinum_ore" : "プラチナ深層鉱石",
+
   "block.freemod.oblivion_grass_block" :  "失われた草ブロック",
 
   "block.freemod.oblivion_dirt" :  "失われた土ブロック",
@@ -27,5 +31,9 @@
 
   "block.freemod.oblivion_sapling" : "失われた苗木",
 
-  "item.freemod.acid_bucket" : "酸のバケツ"
+  "item.freemod.acid_bucket" : "酸のバケツ",
+
+  "item.freemod.platinum" : "プラチナ",
+
+  "item.freemod.platinum_ingot" : "プラチナインゴット"
 }

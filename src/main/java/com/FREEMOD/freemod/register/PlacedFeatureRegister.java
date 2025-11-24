@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,6 +19,9 @@ public class PlacedFeatureRegister {
 
     //tree
     public static final RegistryObject<PlacedFeature> OBLIVION_TREE = PLACED_FEATURES.register("oblivion_tree",() -> new PlacedFeature(ConfiguredFeatureRegister.OBLIVION_TREE.getHolder().get(),tree(1)));
+
+    // ore
+    public static final RegistryObject<PlacedFeature> PLATINUM_ORE = PLACED_FEATURES.register("platinum_ore", () -> new PlacedFeature(ConfiguredFeatureRegister.PLATINUM_ORE.getHolder().get(), commonOrePlacement(17, HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(128)))));
 
 
     private static List<PlacementModifier> tree(int count) {
