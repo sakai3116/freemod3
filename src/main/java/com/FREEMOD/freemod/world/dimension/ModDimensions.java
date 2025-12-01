@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 
 public class ModDimensions {
+    
     public static final ResourceKey<Level> OBLIVION_KEY = ResourceKey.create(Registry.DIMENSION_REGISTRY,
             new ResourceLocation(FreeMod.MOD_ID,"oblivion_world"));
 
