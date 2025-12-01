@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+
 public class StrippedRotatedPillarBlock extends RotatedPillarBlock {
     public StrippedRotatedPillarBlock(Properties properties) {
         super(properties);
