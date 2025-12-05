@@ -129,7 +129,9 @@
     [],
     [],
     [
-      "freemod:oblivion_tree"
+      "freemod:oblivion_tree",
+      "freemod:surface_acid_lake",
+      "freemod:underground_acid_lake"
     ],
     []
   ]
