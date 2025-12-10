@@ -7,6 +7,7 @@ import com.FREEMOD.freemod.main.tab.FreeModTab;
 import com.FREEMOD.freemod.register.*;
 import com.FREEMOD.freemod.villager.ModPOIs;
 import com.FREEMOD.freemod.world.dimension.ModDimensions;
+import com.FREEMOD.freemod.world.structure.OblivionStructures;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -42,8 +43,10 @@ public class FreeMod {
         PlacedFeatureRegister.register(eventBus);
         // feature
         ConfiguredFeatureRegister.register(eventBus);
-        //effect
+        // effect
         ModEffects.register(eventBus);
+        // structure
+        OblivionStructures.register(eventBus);
 
         //独自の登録
         AcidFluid.register(eventBus);
