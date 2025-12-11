@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "freemod:hokora",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 1642136495,
+
+    "spacing": 20,
+
+    "separation": 4,
+
+    "type": "minecraft:random_spread"
+  }
+}
