@@ -17,6 +17,10 @@
 
  "block.freemod.oblivion_stone" :  "Oblivion Stone",
 
+ "block.freemod.oblivion_bricks" : "Oblivion Bricks",
+
+ "block.freemod.mossy_oblivion_bricks" : "Mossy Oblivion Bricks",
+
  "block.freemod.oblivion_log" : "Oblivion log",
 
  "block.freemod.oblivion_wood" : "Oblivion Wood",

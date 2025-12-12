@@ -17,6 +17,10 @@
 
   "block.freemod.oblivion_stone" :  "失われた石",
 
+  "block.freemod.oblivion_bricks" : "失われたレンガ",
+
+  "block.freemod.mossy_oblivion_bricks" : "苔入の失われたレンガ",
+
   "block.freemod.oblivion_log" : "失われた原木",
 
   "block.freemod.oblivion_wood" : "失われた木",

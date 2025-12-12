@@ -29,6 +29,10 @@ public class BlockRegister {
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.DIRT)));
     public static final RegistryObject<Block> OBLIVION_STONE = registerBlockItem("oblivion_stone",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE)));
+    public static final RegistryObject<Block> OBLIVION_BRICKS = registerBlockItem("oblivion_bricks",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.BRICKS)));
+    public static final RegistryObject<Block> MOSSY_OBLIVION_BRICKS = registerBlockItem("mossy_oblivion_bricks",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.BRICKS)));
 
     // tree
     public static final RegistryObject<RotatedPillarBlock> OBLIVION_LOG = registerBlockItem("oblivion_log",
