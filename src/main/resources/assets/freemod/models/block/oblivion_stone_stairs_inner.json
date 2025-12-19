@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "freemod:block/oblivion_stone",
+    "top": "freemod:block/oblivion_stone",
+    "side": "freemod:block/oblivion_stone"
+  }
+}

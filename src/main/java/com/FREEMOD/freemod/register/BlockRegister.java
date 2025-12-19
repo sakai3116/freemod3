@@ -34,6 +34,12 @@ public class BlockRegister {
     public static final RegistryObject<Block> MOSSY_OBLIVION_BRICKS = registerBlockItem("mossy_oblivion_bricks",
             () -> new Block(BlockBehaviour.Properties.copy(Blocks.BRICKS)));
 
+    // 装飾系
+    public static final RegistryObject<Block> OBLIVION_STONE_STAIRS = registerBlockItem("oblivion_stone_stairs",
+            () -> new StairBlock(() -> BlockRegister.OBLIVION_STONE.get().defaultBlockState()
+                    ,BlockBehaviour.Properties.of(Material.STONE).strength(5F).requiresCorrectToolForDrops()));
+
+
     // tree
     public static final RegistryObject<RotatedPillarBlock> OBLIVION_LOG = registerBlockItem("oblivion_log",
             () -> new StrippedRotatedPillarBlock(BlockBehaviour.Properties.copy(Blocks.OAK_LOG)));
