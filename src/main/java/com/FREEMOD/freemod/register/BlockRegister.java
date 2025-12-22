@@ -1,6 +1,7 @@
 package com.FREEMOD.freemod.register;
 
 import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
+import com.FREEMOD.freemod.block.fluid.AcidLiquidBlock;
 import com.FREEMOD.freemod.block.portal.OblivionPortalBlock;
 import com.FREEMOD.freemod.main.FreeMod;
 import com.FREEMOD.freemod.world.feature.tree.OblivionGrower;
@@ -21,6 +22,9 @@ public class BlockRegister {
     // レジストリを作成
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, FreeMod.MOD_ID);
     // ブロック追加時、以下に追加
+    public static final RegistryObject<LiquidBlock> ACID_LIQUID_BLOCK = BLOCKS.register("acid_water",
+            () -> new AcidLiquidBlock(FluidRegister.ACID_FLUID, BlockBehaviour.Properties.of(Material.WATER)
+                    .noCollission().strength(100f).noDrops()));
 
     // biomes -> oblivion
     public static final RegistryObject<Block> OBLIVION_GRASS_BLOCK = registerBlockItem("oblivion_grass_block",
