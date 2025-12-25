@@ -1,7 +1,6 @@
 package com.FREEMOD.freemod.main;
 
 import com.FREEMOD.freemod.effect.ModEffects;
-import com.FREEMOD.freemod.fluid.AcidFluid;
 import com.FREEMOD.freemod.main.tab.FreeModBlockTab;
 import com.FREEMOD.freemod.main.tab.FreeModTab;
 import com.FREEMOD.freemod.register.*;
@@ -49,7 +48,7 @@ public class FreeMod {
         OblivionStructures.register(eventBus);
 
         //独自の登録
-        AcidFluid.register(eventBus);
+        FluidRegister.register(eventBus);
 
     }
     private void commonSetup(final FMLCommonSetupEvent event) {
