@@ -1,0 +1,10 @@
+{
+  "type": "freemod:oblivion_mineshaft",
+  "config": {
+    "start_pool": "freemod:underground/start_pool",
+    "size": 7
+  },
+  "biomes": "#freemod:has_structure/oblivion_mineshaft",
+  "adapt_noise": false,
+  "spawn_overrides": {}
+}
