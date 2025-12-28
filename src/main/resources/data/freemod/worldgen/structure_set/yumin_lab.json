@@ -1,16 +1,16 @@
 {
   "structures": [
     {
-      "structure": "freemod:hokora",
+      "structure": "freemod:yumin_lab",
       "weight": 1
     }
   ],
   "placement": {
     "salt": 1642136495,
 
-    "spacing": 40,
+    "spacing": 20,
 
-    "separation": 10,
+    "separation": 4,
 
     "type": "minecraft:random_spread"
   }
