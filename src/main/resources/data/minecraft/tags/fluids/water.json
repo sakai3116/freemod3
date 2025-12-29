@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "freemod:acid_flowing",
-    "freemod:acid_fluid"
+    "freemod:acid_fluid",
+    "freemod:heal_flowing",
+    "freemod:heal_fluid"
   ]
 }
