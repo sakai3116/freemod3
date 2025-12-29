@@ -15,6 +15,9 @@ public class ModEffects {
     public static final RegistryObject<MobEffect> ACID_EFFECT = MOD_EFFECT.register("acid",
             () -> new AcidEffect(MobEffectCategory.HARMFUL,65280));
 
+    public static final RegistryObject<MobEffect> HEALING_EFFECT = MOD_EFFECT.register("healing",
+            () -> new HealingEffect(MobEffectCategory.HARMFUL,65280));
+
 
 
     public static void register(IEventBus eventBus){
