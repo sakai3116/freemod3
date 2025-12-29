@@ -14,8 +14,8 @@ import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class HealingWaterBlock extends LiquidBlock {
-    private static final int DURATION = 100; // 5秒分
-    private static final int THRESHOLD = 40; // 残り2秒を切ったら更新
+    private static final int HEAL_DURATION = 100; // 5秒分
+    private static final int HEAL_REFRESH = 40; // 残り2秒を切ったら更新
 
     public HealingWaterBlock(Supplier<? extends FlowingFluid> supplier, Properties properties) {
         super(supplier, properties);
@@ -30,10 +30,10 @@ public class HealingWaterBlock extends LiquidBlock {
         MobEffectInstance current = player.getEffect(ModEffects.HEALING_EFFECT.get());
 
         // エフェクトがない、または残り時間が短い場合のみ更新（ここが軽量化のキモ）
-        if (current == null || current.getDuration() < THRESHOLD) {
+        if (current == null || current.getDuration() < HEAL_REFRESH) {
             player.addEffect(new MobEffectInstance(
                     ModEffects.HEALING_EFFECT.get(),
-                    DURATION,
+                    HEAL_DURATION,
                     0,
                     true, // 環境由来（ビーコン等と同じ扱い）
                     false, // パーティクルを消す場合はfalse
