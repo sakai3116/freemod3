@@ -17,6 +17,8 @@ public class ItemRegister {
     public static final RegistryObject<Item> WORLD_LINE = ITEMS.register("world_line", WorldLineItem::new);
     public static final RegistryObject<Item> ACID_BUCKET = ITEMS.register("acid_bucket",
             () -> new BucketItem(FluidRegister.ACID_FLUID,new Item.Properties().tab(FreeMod.FREEMOD_TAB).stacksTo(1)));
+    public static final RegistryObject<Item> HEAL_BUCKET = ITEMS.register("heal_bucket",
+            () -> new BucketItem(FluidRegister.HEAL_FLUID,new Item.Properties().tab(FreeMod.FREEMOD_TAB).stacksTo(1)));
     public static final RegistryObject<Item> PLATINUM = ITEMS.register("platinum",
             () -> new Item(new Item.Properties().tab(FreeMod.FREEMOD_TAB)));
     public static final RegistryObject<Item> PLATINUM_INGOT = ITEMS.register("platinum_ingot",
