@@ -39,7 +39,7 @@ public class FluidRegister {
     public static final ForgeFlowingFluid.Properties HEAL_PROPERTIES = new ForgeFlowingFluid.Properties(
             () -> HEAL_FLUID.get(), () -> HEAL_FLOWING.get(), FluidAttributes.builder(WATER_STILL_RL, WATER_FLOWING_RL)
             .density(15).luminosity(2).viscosity(5).sound(SoundEvents.WATER_AMBIENT).overlay(WATER_OVERLAY_RL)
-            .color(0xFF9ACD32)).slopeFindDistance(4).levelDecreasePerBlock(1).canMultiply()
+            .color(0x4CE0FFFF)).slopeFindDistance(4).levelDecreasePerBlock(1).canMultiply()
             .block(() -> BlockRegister.HEAL_LIQUID_BLOCK.get()).bucket(() -> ItemRegister.HEAL_BUCKET.get());
 
 

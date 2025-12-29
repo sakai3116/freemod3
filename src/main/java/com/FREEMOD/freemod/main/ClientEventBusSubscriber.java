@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.FREEMOD.freemod.register.BlockRegister;
+import com.FREEMOD.freemod.register.FluidRegister;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -76,11 +77,8 @@ public class ClientEventBusSubscriber {
 
             List<Block> translucentBlocks = Arrays.asList(
 
-                    // glass
-
-                    // tree
-
-                    //ore
+                    // fluid
+                    BlockRegister.HEAL_LIQUID_BLOCK.get()
 
             );
 
