@@ -1,6 +1,6 @@
 package com.FREEMOD.freemod.block.fluid;
 
-import com.FREEMOD.freemod.effect.ModEffects;
+import com.FREEMOD.freemod.register.EffectRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -27,12 +27,12 @@ public class HealingWaterBlock extends LiquidBlock {
         if (!(entity instanceof Player player)) return;
 
         // 独自エフェクトを取得（YOUR_REGISTER はご自身の登録クラスに置き換えてください）
-        MobEffectInstance current = player.getEffect(ModEffects.HEALING_EFFECT.get());
+        MobEffectInstance current = player.getEffect(EffectRegister.HEALING_EFFECT.get());
 
         // エフェクトがない、または残り時間が短い場合のみ更新（ここが軽量化のキモ）
         if (current == null || current.getDuration() < HEAL_REFRESH) {
             player.addEffect(new MobEffectInstance(
-                    ModEffects.HEALING_EFFECT.get(),
+                    EffectRegister.HEALING_EFFECT.get(),
                     HEAL_DURATION,
                     0,
                     true, // 環境由来（ビーコン等と同じ扱い）
