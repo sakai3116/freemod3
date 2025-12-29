@@ -1,6 +1,6 @@
 package com.FREEMOD.freemod.block.fluid;
 
-import com.FREEMOD.freemod.effect.ModEffects;
+import com.FREEMOD.freemod.register.EffectRegister;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -27,10 +27,10 @@ public class AcidLiquidBlock extends LiquidBlock {
         if (level.isClientSide) return;
         if (!(entity instanceof LivingEntity living)) return;
 
-        MobEffectInstance cur = living.getEffect(ModEffects.ACID_EFFECT.get());
+        MobEffectInstance cur = living.getEffect(EffectRegister.ACID_EFFECT.get());
         if (cur == null || cur.getDuration() < REFRESH_THRESHOLD) {
             living.addEffect(new MobEffectInstance(
-                    ModEffects.ACID_EFFECT.get(),
+                    EffectRegister.ACID_EFFECT.get(),
                     EFFECT_DURATION,
                     0,
                     true,

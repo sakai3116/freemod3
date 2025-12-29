@@ -39,6 +39,12 @@
 
  "item.freemod.acid_bucket" : "Acid Bucket",
 
+ "effect.freemod.acid" : "Acid",
+
+ "item.freemod.heal_bucket" : "Heal Bucket",
+
+ "effect.freemod.healing" : "Healing",
+
  "item.freemod.platinum" : "Platinum",
 
  "item.freemod.platinum_ingot" : "Platinum Ingot"
