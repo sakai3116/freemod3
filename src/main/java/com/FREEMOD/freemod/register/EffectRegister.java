@@ -1,7 +1,7 @@
 package com.FREEMOD.freemod.register;
 
 import com.FREEMOD.freemod.effect.AcidEffect;
-import com.FREEMOD.freemod.effect.HealingEffect;
+import com.FREEMOD.freemod.effect.HealBlessingEffect;
 import com.FREEMOD.freemod.main.FreeMod;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -17,8 +17,8 @@ public class EffectRegister {
     public static final RegistryObject<MobEffect> ACID_EFFECT = EFFECTS.register("acid",
             () -> new AcidEffect(MobEffectCategory.HARMFUL,65280));
 
-    public static final RegistryObject<MobEffect> HEALING_EFFECT = EFFECTS.register("healing",
-            () -> new HealingEffect(MobEffectCategory.BENEFICIAL,65280));
+    public static final RegistryObject<MobEffect> HEAL_BLESSING = EFFECTS.register("heal_blessing",
+            () -> new HealBlessingEffect(MobEffectCategory.BENEFICIAL,65280));
 
     public static void register(IEventBus eventBus){
         EFFECTS.register(eventBus);
