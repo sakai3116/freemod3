@@ -78,7 +78,7 @@ public class ClientEventBusSubscriber {
             List<Block> translucentBlocks = Arrays.asList(
 
                     // fluid
-                    BlockRegister.HEAL_LIQUID_BLOCK.get()
+                    BlockRegister.NEKTAR_LIQUID_BLOCK.get()
 
             );
 

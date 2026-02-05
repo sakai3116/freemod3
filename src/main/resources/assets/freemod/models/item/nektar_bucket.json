@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "freemod:item/heal_bucket"
+    "layer0": "freemod:item/nektar_bucket"
   }
 }
