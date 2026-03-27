@@ -1,5 +1,6 @@
 package com.FREEMOD.freemod.register;
 
+import com.FREEMOD.freemod.block.CustomChestBlock;
 import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
 import com.FREEMOD.freemod.block.fluid.AcidLiquidBlock;
 import com.FREEMOD.freemod.block.fluid.NektarWaterBlock;
@@ -76,6 +77,9 @@ public class BlockRegister {
     public static final RegistryObject<Block> OBLIVION_PORTAL_GATE_BLOCK = registerBlockItem("oblivion_portal_gate_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
     public static final RegistryObject<Block> OBLIVION_PORTAL_BLOCK = BLOCKS.register("oblivion_portal", OblivionPortalBlock::new);
+
+    public static final RegistryObject<ChestBlock> CUSTOM_CHEST_BLOCK = registerBlockItem("custom_chest_block",
+            () -> new CustomChestBlock(BlockBehaviour.Properties.copy(Blocks.CHEST)));
 
     // ブロックアイテム作成用メソッド 基本的に触らない
     private static <T extends Block> RegistryObject<T> registerBlockItem(String name, Supplier<T> supplier) {

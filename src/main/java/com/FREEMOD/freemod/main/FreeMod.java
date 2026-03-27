@@ -6,11 +6,14 @@ import com.FREEMOD.freemod.register.*;
 import com.FREEMOD.freemod.villager.ModPOIs;
 import com.FREEMOD.freemod.world.dimension.ModDimensions;
 import com.FREEMOD.freemod.world.structure.OblivionStructures;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
 
 @Mod("freemod")
 public class FreeMod {
@@ -46,6 +49,10 @@ public class FreeMod {
         // structure
         OblivionStructures.register(eventBus);
 
+        BlockEntityRegister.register(eventBus);
+
+        eventBus.addListener(this::clientSetup);
+
         //独自の登録
         FluidRegister.register(eventBus);
 
@@ -53,5 +60,11 @@ public class FreeMod {
     private void commonSetup(final FMLCommonSetupEvent event) {
 
     }
-
+    private void clientSetup(final FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            // ここに入れます！
+            // ※第一引数はこれから作成するBlockEntityRegisterの変数名に合わせてください
+            BlockEntityRenderers.register(BlockEntityRegister.CUSTOM_CHEST_BLOCK_ENTITY.get(), ChestRenderer::new);
+        });
+    }
 }
