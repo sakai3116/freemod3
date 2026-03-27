@@ -5,8 +5,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class HealingEffect extends MobEffect {
-    public HealingEffect(MobEffectCategory category, int color) {
+public class HealBlessingEffect extends MobEffect {
+    public HealBlessingEffect(MobEffectCategory category, int color) {
         super(category, color);
     }
 

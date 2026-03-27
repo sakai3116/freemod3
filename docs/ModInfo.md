@@ -11,7 +11,7 @@
 |![acid_bucket](/src/main/resources/assets/freemod/textures/item/acid_bucket.png)|酸のバケツ|・現実の酸と同じく接触すると継続ダメージを受ける|2025/12/3|||
 |![platinum](/src/main/resources/assets/freemod/textures/item/platinum.png)|プラチナ|・新規で追加した鉱石|2025/12/12|||
 |![platinum_ingot](/src/main/resources/assets/freemod/textures/item/platinum_ingot.png)|プラチナインゴット|・新規で追加した鉱石のインゴット|2025/12/12|||
-|![heal_bucket](/src/main/resources/assets/freemod/textures/item/heal_bucket.png)|回復バケツ|・この液体に触れると爆速でHPと満腹が回復|2025/12/29|||
+|![nektar_bucket](/src/main/resources/assets/freemod/textures/item/nektar_bucket.png)|ネクタルバケツ|・この液体に触れると爆速でHPと満腹が回復|2025/12/29|2026/2/5||
 
 ##
 ### 追加ブロック等
@@ -45,7 +45,7 @@
 |TEXTURE|NAME|INFO|FAST ADD DAY|UPDATE DAY|PIC|
 |---|---|---|---|---|---|
 |![acid](/src/main/resources/assets/freemod/textures/mob_effect/acid.png)|酸|・現実の酸と同じく発生すると継続ダメージを受ける|2025/12/6|||
-|![healing](/src/main/resources/assets/freemod/textures/mob_effect/healing.png)|???|・爆速でHPと満腹度が回復する|2025/12/29|||
+|![heal_blessing](/src/main/resources/assets/freemod/textures/mob_effect/heal_blessing.png)|回復の加護|・爆速でHPと満腹度が回復する|2025/12/29|2026/2/5||
 |||||||
 
 ### 自然生成（OblivionWorldディメンション内）

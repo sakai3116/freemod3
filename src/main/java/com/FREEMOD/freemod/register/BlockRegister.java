@@ -2,7 +2,7 @@ package com.FREEMOD.freemod.register;
 
 import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
 import com.FREEMOD.freemod.block.fluid.AcidLiquidBlock;
-import com.FREEMOD.freemod.block.fluid.HealingWaterBlock;
+import com.FREEMOD.freemod.block.fluid.NektarWaterBlock;
 import com.FREEMOD.freemod.block.portal.OblivionPortalBlock;
 import com.FREEMOD.freemod.main.FreeMod;
 import com.FREEMOD.freemod.world.feature.tree.OblivionGrower;
@@ -26,8 +26,8 @@ public class BlockRegister {
     public static final RegistryObject<LiquidBlock> ACID_LIQUID_BLOCK = BLOCKS.register("acid_water",
             () -> new AcidLiquidBlock(FluidRegister.ACID_FLUID, BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
-    public static final RegistryObject<LiquidBlock> HEAL_LIQUID_BLOCK = BLOCKS.register("heal_water",
-            () -> new HealingWaterBlock(FluidRegister.HEAL_FLUID, BlockBehaviour.Properties.of(Material.WATER)
+    public static final RegistryObject<LiquidBlock> NEKTAR_LIQUID_BLOCK = BLOCKS.register("nektar_water",
+            () -> new NektarWaterBlock(FluidRegister.NEKTAR_FLUID, BlockBehaviour.Properties.of(Material.WATER)
                     .noCollission().strength(100f).noDrops()));
 
     // biomes -> oblivion

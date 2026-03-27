@@ -3,7 +3,7 @@
   "values": [
     "freemod:acid_flowing",
     "freemod:acid_fluid",
-    "freemod:heal_flowing",
-    "freemod:heal_fluid"
+    "freemod:nektar_flowing",
+    "freemod:nektar_fluid"
   ]
 }

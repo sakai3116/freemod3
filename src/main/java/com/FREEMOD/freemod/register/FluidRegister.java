@@ -32,15 +32,15 @@ public class FluidRegister {
             .block(() -> BlockRegister.ACID_LIQUID_BLOCK.get()).bucket(() -> ItemRegister.ACID_BUCKET.get());
 
     //回復する液体
-    public static final RegistryObject<FlowingFluid> HEAL_FLUID
-            = FLUIDS.register("heal_fluid", () -> new ForgeFlowingFluid.Source(FluidRegister.HEAL_PROPERTIES));
-    public static final RegistryObject<FlowingFluid> HEAL_FLOWING
-            = FLUIDS.register("heal_flowing", () -> new ForgeFlowingFluid.Flowing(FluidRegister.HEAL_PROPERTIES));
+    public static final RegistryObject<FlowingFluid> NEKTAR_FLUID
+            = FLUIDS.register("nektar_fluid", () -> new ForgeFlowingFluid.Source(FluidRegister.HEAL_PROPERTIES));
+    public static final RegistryObject<FlowingFluid> NEKTAR_FLOWING
+            = FLUIDS.register("nektar_flowing", () -> new ForgeFlowingFluid.Flowing(FluidRegister.HEAL_PROPERTIES));
     public static final ForgeFlowingFluid.Properties HEAL_PROPERTIES = new ForgeFlowingFluid.Properties(
-            () -> HEAL_FLUID.get(), () -> HEAL_FLOWING.get(), FluidAttributes.builder(WATER_STILL_RL, WATER_FLOWING_RL)
+            () -> NEKTAR_FLUID.get(), () -> NEKTAR_FLOWING.get(), FluidAttributes.builder(WATER_STILL_RL, WATER_FLOWING_RL)
             .density(15).luminosity(2).viscosity(5).sound(SoundEvents.WATER_AMBIENT).overlay(WATER_OVERLAY_RL)
             .color(0x4CE0FFFF)).slopeFindDistance(4).levelDecreasePerBlock(1).canMultiply()
-            .block(() -> BlockRegister.HEAL_LIQUID_BLOCK.get()).bucket(() -> ItemRegister.HEAL_BUCKET.get());
+            .block(() -> BlockRegister.NEKTAR_LIQUID_BLOCK.get()).bucket(() -> ItemRegister.NEKTAR_BUCKET.get());
 
 
     public static void register(IEventBus eventBus) {

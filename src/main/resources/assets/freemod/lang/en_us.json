@@ -41,9 +41,9 @@
 
  "effect.freemod.acid" : "Acid",
 
- "item.freemod.heal_bucket" : "Heal Bucket",
+ "item.freemod.nektar_bucket" : "Nektar Bucket",
 
- "effect.freemod.healing" : "Healing",
+ "effect.freemod.heal_blessing" : "Heal Blessing",
 
  "item.freemod.platinum" : "Platinum",
 

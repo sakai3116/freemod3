@@ -41,9 +41,9 @@
 
   "effect.freemod.acid" : "酸",
 
-  "item.freemod.heal_bucket" : "回復バケツ",
+  "item.freemod.nektar_bucket" : "ネクタルバケツ",
 
-  "effect.freemod.healing" : "？？？",
+  "effect.freemod.heal_blessing" : "回復の加護",
 
   "item.freemod.platinum" : "プラチナ",
 
