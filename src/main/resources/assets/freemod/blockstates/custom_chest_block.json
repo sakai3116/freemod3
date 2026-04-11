@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "freemod:block/custom_chest_block"
+    }
+  }
+}

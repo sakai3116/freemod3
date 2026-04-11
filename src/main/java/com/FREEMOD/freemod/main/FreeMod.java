@@ -1,13 +1,16 @@
 package com.FREEMOD.freemod.main;
 
+import com.FREEMOD.freemod.entity.renderer.CustomChestRenderer;
 import com.FREEMOD.freemod.main.tab.FreeModBlockTab;
 import com.FREEMOD.freemod.main.tab.FreeModTab;
 import com.FREEMOD.freemod.register.*;
 import com.FREEMOD.freemod.villager.ModPOIs;
 import com.FREEMOD.freemod.world.dimension.ModDimensions;
 import com.FREEMOD.freemod.world.structure.OblivionStructures;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -53,6 +56,8 @@ public class FreeMod {
 
         eventBus.addListener(this::clientSetup);
 
+        eventBus.addListener(this::onTextureStitch);
+
         //独自の登録
         FluidRegister.register(eventBus);
 
@@ -64,7 +69,13 @@ public class FreeMod {
         event.enqueueWork(() -> {
             // ここに入れます！
             // ※第一引数はこれから作成するBlockEntityRegisterの変数名に合わせてください
-            BlockEntityRenderers.register(BlockEntityRegister.CUSTOM_CHEST_BLOCK_ENTITY.get(), ChestRenderer::new);
+            BlockEntityRenderers.register(BlockEntityRegister.CUSTOM_CHEST_BLOCK_ENTITY.get(), CustomChestRenderer::new);
         });
+    }
+
+    private void onTextureStitch(final TextureStitchEvent.Pre event) {
+        if (event.getAtlas().location().equals(Sheets.CHEST_SHEET)) {
+            event.addSprite(CustomChestRenderer.CUSTOM_CHEST_LOCATION);
+        }
     }
 }

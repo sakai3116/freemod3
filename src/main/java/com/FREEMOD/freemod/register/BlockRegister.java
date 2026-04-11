@@ -78,7 +78,7 @@ public class BlockRegister {
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
     public static final RegistryObject<Block> OBLIVION_PORTAL_BLOCK = BLOCKS.register("oblivion_portal", OblivionPortalBlock::new);
 
-    public static final RegistryObject<ChestBlock> CUSTOM_CHEST_BLOCK = registerBlockItem("custom_chest_block",
+    public static final RegistryObject<ChestBlock> CUSTOM_CHEST_BLOCK = BLOCKS.register("custom_chest_block",
             () -> new CustomChestBlock(BlockBehaviour.Properties.copy(Blocks.CHEST)));
 
     // ブロックアイテム作成用メソッド 基本的に触らない
@@ -90,6 +90,24 @@ public class BlockRegister {
                 () -> new BlockItem(block.get(), new Item.Properties().tab(FreeMod.FREEMOD_BLOCK_TAB)));
         return block;
     }
+
+
+
+//    // 2. アイテムとしての登録（ここで先ほど作ったレンダラーを紐づけます）
+//    // ※ItemRegister.ITEMS がエラーになる場合は、上部にインポートを追加してください
+//    public static final RegistryObject<Item> CUSTOM_CHEST_ITEM = ItemRegister.ITEMS.register("custom_chest_block",
+//            () -> new BlockItem(CUSTOM_CHEST_BLOCK.get(), new Item.Properties().tab(FreeMod.FREEMOD_BLOCK_TAB)) {
+//                @Override
+//                public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer) {
+//                    consumer.accept(new net.minecraftforge.client.IItemRenderProperties() {
+//                        @Override
+//                        public net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer getItemStackRenderer() {
+//                            // 先ほど作成したクラスを指定します
+//                            return new com.FREEMOD.freemod.client.renderer.CustomChestItemRenderer();
+//                        }
+//                    });
+//                }
+//            });
 
     public static void register(IEventBus eventBus) {
         // レジストリをイベントバスに登録
