@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
 
 @Mod("freemod")
 public class FreeMod {
@@ -57,6 +56,8 @@ public class FreeMod {
         eventBus.addListener(this::clientSetup);
 
         eventBus.addListener(this::onTextureStitch);
+
+        EntityRegister.register(eventBus);
 
         //独自の登録
         FluidRegister.register(eventBus);

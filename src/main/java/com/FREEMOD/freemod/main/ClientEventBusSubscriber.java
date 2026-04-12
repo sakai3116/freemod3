@@ -3,7 +3,9 @@ package com.FREEMOD.freemod.main;
 import java.util.Arrays;
 import java.util.List;
 
+import com.FREEMOD.freemod.entity.renderer.FastShotSkeletonRenderer;
 import com.FREEMOD.freemod.register.BlockRegister;
+import com.FREEMOD.freemod.register.EntityRegister;
 import com.FREEMOD.freemod.register.FluidRegister;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -38,7 +40,7 @@ public class ClientEventBusSubscriber {
     //RegisterRenderersのイベントが走った時にMobのレンダラーを読み込ませる
     @SubscribeEvent
     public static void registerRender(EntityRenderersEvent.RegisterRenderers event){
-
+        event.registerEntityRenderer(EntityRegister.FAST_SHOT_SKELETON.get(), FastShotSkeletonRenderer::new);
     }
 
     private static void animation(FMLClientSetupEvent event){
