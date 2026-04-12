@@ -47,5 +47,9 @@
 
   "item.freemod.platinum" : "プラチナ",
 
-  "item.freemod.platinum_ingot" : "プラチナインゴット"
+  "item.freemod.platinum_ingot" : "プラチナインゴット",
+
+  "entity.freemod.fast_shot_skeleton" : "早打ちスケルトン",
+
+  "item.freemod.fast_shot_skeleton_spawn_egg" : "早打ちスケルトンのスポーンエッグ"
 }
