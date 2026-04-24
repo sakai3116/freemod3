@@ -45,6 +45,8 @@
 
  "effect.freemod.heal_blessing" : "Heal Blessing",
 
+ 
+
  "item.freemod.platinum" : "Platinum",
 
  "item.freemod.platinum_ingot" : "Platinum Ingot",
@@ -53,5 +55,5 @@
 
  "item.freemod.fast_shot_skeleton_spawn_egg" : "Fast Shot Skeleton Spawn Egg",
 
- 
+
 }
