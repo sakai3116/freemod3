@@ -10,7 +10,6 @@ public class ClientCameraHandler {
     private static Entity cameraDummy = null;
     private static Entity originalCameraEntity = null;
 
-    // 起動時のプレイヤーの向きを記憶する変数
     private static float originalPlayerYaw = 0.0F;
     private static float originalPlayerPitch = 0.0F;
 
@@ -23,11 +22,8 @@ public class ClientCameraHandler {
         if (mc.player == null || mc.level == null) return;
 
         if (!isDroneMode) {
-            // --- ドローンモード開始 ---
             isDroneMode = true;
             originalCameraEntity = mc.getCameraEntity();
-
-            // 起動時のプレイヤーの「本来の向き」を記憶
             originalPlayerYaw = mc.player.getYRot();
             originalPlayerPitch = mc.player.getXRot();
 
@@ -36,9 +32,11 @@ public class ClientCameraHandler {
                 cameraDummy.setPos(mc.player.getX(), mc.player.getY() + 20.0, mc.player.getZ());
                 cameraDummy.noPhysics = true;
 
-                // ダミーの初期角度をプレイヤーに合わせる
+                // 初期の向きを設定
                 cameraDummy.setYRot(originalPlayerYaw);
                 cameraDummy.setXRot(originalPlayerPitch);
+                // xo, yo, zo, yRotO, xRotO (Oが付く補間用変数) も同期
+                cameraDummy.yo = cameraDummy.getY();
                 cameraDummy.yRotO = originalPlayerYaw;
                 cameraDummy.xRotO = originalPlayerPitch;
 
@@ -47,14 +45,12 @@ public class ClientCameraHandler {
             mc.player.displayClientMessage(new TextComponent("ドローン視点：起動"), true);
 
         } else {
-            // --- ドローンモード終了 ---
             isDroneMode = false;
 
             if (originalCameraEntity != null) {
                 mc.setCameraEntity(originalCameraEntity);
             }
 
-            // 終了時、プレイヤーの向きを「起動した時の向き」に強制リセット
             if (mc.player != null) {
                 mc.player.setYRot(originalPlayerYaw);
                 mc.player.setXRot(originalPlayerPitch);
@@ -70,12 +66,15 @@ public class ClientCameraHandler {
         }
     }
 
-    public static void onClientTick() {
+    /**
+     * 💡 毎フレーム（Renderバス）で呼び出される同期ロジック
+     */
+    public static void onRenderTick(float partialTick) {
         Minecraft mc = Minecraft.getInstance();
         if (!isDroneMode || cameraDummy == null || mc.player == null) return;
 
-        // 💡 ここが最大のポイント
-        // マウス操作によって動いた「プレイヤーの現在の視点」を、そのままカメラ（ダミー）の角度にコピーする
+        // 💡 Render のタイミングで、プレイヤーの回転をカメラにコピー
+        // O(前フレームのデータ)もコピーすることで、補間のブレを完全に消す
         float currentYaw = mc.player.getYRot();
         float currentPitch = mc.player.getXRot();
 
@@ -90,8 +89,7 @@ public class ClientCameraHandler {
         cameraDummy.yo = cameraDummy.getY();
         cameraDummy.zo = cameraDummy.getZ();
 
-        // 💡 ドローン中に、下のプレイヤーの「体（モデル）」がキョロキョロ回転して見えないように、
-        // レンダリング（描画）用の体の向きだけを固定する（yBodyRot, yHeadRot）
+        // プレイヤーの体のモデル描画を固定
         mc.player.yBodyRot = originalPlayerYaw;
         mc.player.yBodyRotO = originalPlayerYaw;
         mc.player.yHeadRot = originalPlayerYaw;

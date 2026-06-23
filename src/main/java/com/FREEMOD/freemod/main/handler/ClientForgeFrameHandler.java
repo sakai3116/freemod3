@@ -10,10 +10,18 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientForgeFrameHandler {
 
     // ClientForgeTickHandler の中身はこれだけにしてください
+//    @SubscribeEvent
+//    public static void onClientTick(TickEvent.ClientTickEvent event) {
+//        if (event.phase == TickEvent.Phase.END) {
+//            ClientCameraHandler.onClientTick();
+//        }
+//    }
+
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
+    public static void onRenderTick(TickEvent.RenderTickEvent event) {
+        // Renderの終了タイミングで同期を行う
         if (event.phase == TickEvent.Phase.END) {
-            ClientCameraHandler.onClientTick();
+            ClientCameraHandler.onRenderTick(event.renderTickTime);
         }
     }
 }
