@@ -17,6 +17,8 @@ public class DroneCameraItem extends Item {
         );
     }
 
+    // memo 右クリでドローンモードのOn、Off　Qでドロップ時の対策で右CTRLで強制モード終了のキーバインドあり
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
