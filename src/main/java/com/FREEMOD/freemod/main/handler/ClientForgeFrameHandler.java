@@ -1,6 +1,7 @@
 package com.FREEMOD.freemod.main.handler;
 
 import com.FREEMOD.freemod.main.FreeMod;
+import com.FREEMOD.freemod.main.config.ModKeyBindings;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
@@ -21,9 +22,15 @@ public class ClientForgeFrameHandler {
     // カメラの描画
     @SubscribeEvent
     public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        // Renderの終了タイミングで同期を行う
         if (event.phase == TickEvent.Phase.END) {
             ClientCameraHandler.onRenderTick(event.renderTickTime);
+
+            // 💡 ここを追記！
+            // ドローンモード中に、登録したキー(デフォルトはX)が押されたか判定
+            if (ClientCameraHandler.isDroneMode() && ModKeyBindings.droneExitKey.consumeClick()) {
+                // 強制的にドローンモードを終了（トグル）させる
+                ClientCameraHandler.toggleDroneMode();
+            }
         }
     }
     // 手の非表示
