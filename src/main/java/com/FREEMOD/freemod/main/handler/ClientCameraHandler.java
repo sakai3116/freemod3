@@ -114,10 +114,10 @@ public class ClientCameraHandler {
             double cosYaw = Mth.cos(yawRad);
 
             // 前後・左右の移動ベクトル計算
-            double fX = -sinYaw * moveForward;
-            double fZ = cosYaw * moveForward;
-            double sX = cosYaw * moveStrafe;
-            double sZ = sinYaw * moveStrafe;
+            double fX = sinYaw * moveForward;
+            double fZ = -cosYaw * moveForward;
+            double sX = -cosYaw * moveStrafe;
+            double sZ = -sinYaw * moveStrafe;
 
             // 座標変数（droneX, Y, Z）を更新
             droneX += (fX + sX) * MOVE_SPEED;
@@ -134,9 +134,9 @@ public class ClientCameraHandler {
 
         cameraDummy.setPos(droneX, droneY, droneZ);
 
-        cameraDummy.setYRot(currentYaw);
+        cameraDummy.setYRot(currentYaw + 180.0F);
         cameraDummy.setXRot(currentPitch);
-        cameraDummy.yRotO = mc.player.yRotO;
+        cameraDummy.yRotO = mc.player.yRotO + 180.0F;
         cameraDummy.xRotO = mc.player.xRotO;
 
         // 4. 下にいるプレイヤー本体の同期（その場で描画を固定、移動・回転入力を打ち消す）

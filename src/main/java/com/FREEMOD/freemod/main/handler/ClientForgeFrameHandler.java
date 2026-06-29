@@ -1,38 +1,56 @@
 package com.FREEMOD.freemod.main.handler;
 
-import com.FREEMOD.freemod.main.FreeMod;
-import com.FREEMOD.freemod.main.config.ModKeyBindings;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = FreeMod.MOD_ID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = com.FREEMOD.freemod.main.FreeMod.MOD_ID, value = Dist.CLIENT)
 public class ClientForgeFrameHandler {
 
-    // ClientForgeTickHandler の中身はこれだけにしてください
-//    @SubscribeEvent
-//    public static void onClientTick(TickEvent.ClientTickEvent event) {
-//        if (event.phase == TickEvent.Phase.END) {
-//            ClientCameraHandler.onClientTick();
-//        }
-//    }
-
-    // カメラの描画
+    /**
+     * 💡 対策1: ドローンモード中、プレイヤーが勝手に歩き出すのを防ぐ
+     */
     @SubscribeEvent
-    public static void onRenderTick(TickEvent.RenderTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            ClientCameraHandler.onRenderTick(event.renderTickTime);
-
-            // 💡 ここを追記！
-            // ドローンモード中に、登録したキー(デフォルトはX)が押されたか判定
-            if (ClientCameraHandler.isDroneMode() && ModKeyBindings.droneExitKey.consumeClick()) {
-                // 強制的にドローンモードを終了（トグル）させる
-                ClientCameraHandler.toggleDroneMode();
+    public static void onMovementInputUpdate(MovementInputUpdateEvent event) {
+        if (ClientCameraHandler.isDroneMode()) {
+            if (event.getInput() != null) {
+                event.getInput().forwardImpulse = 0.0F;
+                event.getInput().leftImpulse = 0.0F;
+                event.getInput().up = false;
+                event.getInput().down = false;
+                event.getInput().left = false;
+                event.getInput().right = false;
+                event.getInput().jumping = false;
+                event.getInput().shiftKeyDown = false;
             }
         }
     }
+
+    /**
+     * 💡 対策2: 毎フレームの描画処理（三人称視点のロックと移動ロジックの呼び出し）
+     */
+    @SubscribeEvent
+    public static void onRenderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.options == null) return;
+
+        if (ClientCameraHandler.isDroneMode()) {
+            // 💡 視点を「三人称後方（F5キーの状態）」に強制ロック
+            if (mc.options.getCameraType() != net.minecraft.client.CameraType.THIRD_PERSON_BACK) {
+                mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK);
+            }
+
+            // ClientCameraHandler側の移動・同期ロジックを実行する
+            ClientCameraHandler.onRenderTick(event.renderTickTime);
+        }
+    }
+
     // 手の非表示
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event){
