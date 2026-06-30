@@ -3,6 +3,8 @@ package com.FREEMOD.freemod.main;
 import java.util.Arrays;
 import java.util.List;
 
+import com.FREEMOD.freemod.entity.model.DroneModel;
+import com.FREEMOD.freemod.entity.renderer.DroneRenderer;
 import com.FREEMOD.freemod.entity.renderer.FastShotSkeletonRenderer;
 import com.FREEMOD.freemod.register.BlockRegister;
 import com.FREEMOD.freemod.register.EntityRegister;
@@ -31,13 +33,14 @@ public class ClientEventBusSubscriber {
     //RegisterLayerDefinitionのイベントが走った時にMobのレイヤを読み込ませる
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event){
-
+        event.registerLayerDefinition(DroneRenderer.DRONE_LAYER, DroneModel::createBodyLayer);
     }
 
     //RegisterRenderersのイベントが走った時にMobのレンダラーを読み込ませる
     @SubscribeEvent
     public static void registerRender(EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(EntityRegister.FAST_SHOT_SKELETON.get(), FastShotSkeletonRenderer::new);
+        //event.registerEntityRenderer(EntityRegister.DRONE.get(), DroneRenderer::new);
     }
 
     private static void animation(FMLClientSetupEvent event){
