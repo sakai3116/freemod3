@@ -1,12 +1,13 @@
 package com.FREEMOD.freemod.main.handler;
 
-import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.CameraType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
+import net.minecraft.ChatFormatting;
 
 public class ClientCameraHandler {
     private static boolean isDroneMode = false;
@@ -16,13 +17,16 @@ public class ClientCameraHandler {
     private static float originalPlayerYaw = 0.0F;
     private static float originalPlayerPitch = 0.0F;
 
-    // 💡 ドローンの現在位置を保持する変数
     private static double droneX = 0.0D;
     private static double droneY = 0.0D;
     private static double droneZ = 0.0D;
 
-    // ドローンの移動速度（好みに合わせて調整してください）
     private static final double MOVE_SPEED = 0.12D;
+
+    // 💡 制限用の定数と変数（ミリ秒方式に変更）
+    private static final double MAX_DISTANCE = 200.0D; // 最大飛行距離（200ブロック）
+    private static final long MAX_FLIGHT_TIME_MS = 20000L; // 飛行可能時間（20秒 = 20000ミリ秒）
+    private static long flightStartTime = 0L; // 💡 飛行開始したシステム時刻を記録する変数
 
     public static boolean isDroneMode() {
         return isDroneMode;
@@ -35,6 +39,7 @@ public class ClientCameraHandler {
         if (!isDroneMode) {
             // --- ドローンモード開始 ---
             isDroneMode = true;
+            flightStartTime = System.currentTimeMillis(); // 💡 起動した瞬間の時刻（ミリ秒）を記録
             originalCameraEntity = mc.getCameraEntity();
             originalPlayerYaw = mc.player.getYRot();
             originalPlayerPitch = mc.player.getXRot();
@@ -59,7 +64,7 @@ public class ClientCameraHandler {
 
                 mc.setCameraEntity(cameraDummy);
             }
-            mc.player.displayClientMessage(new TextComponent("ドローン視点：起動"), true);
+            mc.player.displayClientMessage(new TextComponent("ドローン視点：起動 (制限時間: 20秒 / 距離: 200m)"), true);
 
         } else {
             // --- ドローンモード終了 ---
@@ -95,44 +100,61 @@ public class ClientCameraHandler {
         Minecraft mc = Minecraft.getInstance();
         if (!isDroneMode || cameraDummy == null || mc.player == null) return;
 
-        // 1. マウス操作によるプレイヤーの回転を取得
+        // 💡 1. 時間制限（バッテリー）のチェックをミリ秒計算に変更
+        long elapsedMs = System.currentTimeMillis() - flightStartTime; // 起動してからの経過時間
+        if (elapsedMs >= MAX_FLIGHT_TIME_MS) {
+            mc.player.displayClientMessage(new TextComponent("バッテリー切れ：ドローンが強制シャットダウンしました").withStyle(ChatFormatting.RED), false);
+            toggleDroneMode();
+            return;
+        }
+
+        // 残り秒数の計算 (ミリ秒から秒に変換)
+        long remainingSeconds = (MAX_FLIGHT_TIME_MS - elapsedMs) / 1000L;
+        if (remainingSeconds <= 3 && remainingSeconds > 0) {
+            mc.player.displayClientMessage(new TextComponent("【警告】バッテリー残量わずか！ 残り " + remainingSeconds + " 秒").withStyle(ChatFormatting.GOLD), true);
+        }
+
+        // 2. 距離制限（電波届く範囲）のチェック
+        double distanceSq = mc.player.distanceToSqr(droneX, droneY, droneZ);
+        if (distanceSq > MAX_DISTANCE * MAX_DISTANCE) {
+            mc.player.displayClientMessage(new TextComponent("通信途絶：最大通信距離（200m）を超えました").withStyle(ChatFormatting.RED), false);
+            toggleDroneMode();
+            return;
+        }
+
+        // 3. マウス操作によるプレイヤーの回転を取得
         float currentYaw = mc.player.getYRot();
         float currentPitch = mc.player.getXRot();
 
-        // 2. 💡 キー入力によるドローンの移動計算
+        // 4. キー入力によるドローンの移動計算
         Options options = mc.options;
         double moveForward = 0.0D;
         double moveStrafe = 0.0D;
         double moveVertical = 0.0D;
 
-        if (options.keyUp.isDown()) moveForward += 1.0D;    // Wキー
-        if (options.keyDown.isDown()) moveForward -= 1.0D;  // Sキー
-        if (options.keyLeft.isDown()) moveStrafe += 1.0D;   // Aキー
-        if (options.keyRight.isDown()) moveStrafe -= 1.0D;  // Dキー
-        if (options.keyJump.isDown()) moveVertical += 1.0D;   // スペースキー（上昇）
-        if (options.keyShift.isDown()) moveVertical -= 1.0D;  // シフトキー（下降）
+        if (options.keyUp.isDown()) moveForward += 1.0D;
+        if (options.keyDown.isDown()) moveForward -= 1.0D;
+        if (options.keyLeft.isDown()) moveStrafe += 1.0D;
+        if (options.keyRight.isDown()) moveStrafe -= 1.0D;
+        if (options.keyJump.isDown()) moveVertical += 1.0D;
+        if (options.keyShift.isDown()) moveVertical -= 1.0D;
 
-        // カメラが向いている方角（Yaw）を基準に、WASDの移動方向を3次元ベクトルに変換
         if (moveForward != 0 || moveStrafe != 0 || moveVertical != 0) {
             float yawRad = currentYaw * ((float)Math.PI / 180F);
             double sinYaw = Mth.sin(yawRad);
             double cosYaw = Mth.cos(yawRad);
 
-            // 前後・左右の移動ベクトル計算
             double fX = sinYaw * moveForward;
             double fZ = -cosYaw * moveForward;
             double sX = -cosYaw * moveStrafe;
             double sZ = -sinYaw * moveStrafe;
 
-            // 座標変数（droneX, Y, Z）を更新
             droneX += (fX + sX) * MOVE_SPEED;
             droneY += moveVertical * MOVE_SPEED;
             droneZ += (fZ + sZ) * MOVE_SPEED;
         }
 
-        // 3. カメラ（ダミー）の座標と角度を更新
-        // 前フレームの座標（Oがつく変数）に「移動前の座標」を入れることで、
-        // 移動時もカクつかず滑らか（ヌルヌル）に並進移動させます
+        // 5. カメラ（ダミー）の座標と角度を更新
         cameraDummy.xo = cameraDummy.getX();
         cameraDummy.yo = cameraDummy.getY();
         cameraDummy.zo = cameraDummy.getZ();
@@ -144,8 +166,8 @@ public class ClientCameraHandler {
         cameraDummy.yRotO = mc.player.yRotO + 180.0F;
         cameraDummy.xRotO = mc.player.xRotO;
 
-        // 4. 下にいるプレイヤー本体の同期（その場で描画を固定、移動・回転入力を打ち消す）
-        mc.player.setDeltaMovement(0, 0, 0); // ドローン操作中にプレイヤーが勝手に動かないように物理移動をゼロに
+        // 6. 下にいるプレイヤー本体の同期
+        mc.player.setDeltaMovement(0, 0, 0);
         mc.player.yBodyRot = originalPlayerYaw;
         mc.player.yBodyRotO = originalPlayerYaw;
         mc.player.yHeadRot = originalPlayerYaw;
