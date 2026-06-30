@@ -23,10 +23,10 @@ public class ClientCameraHandler {
 
     private static final double MOVE_SPEED = 0.12D;
 
-    // 💡 制限用の定数と変数（ミリ秒方式に変更）
-    private static final double MAX_DISTANCE = 200.0D; // 最大飛行距離（200ブロック）
-    private static final long MAX_FLIGHT_TIME_MS = 20000L; // 飛行可能時間（20秒 = 20000ミリ秒）
-    private static long flightStartTime = 0L; // 💡 飛行開始したシステム時刻を記録する変数
+    // 💡 制限用の定数を変更
+    private static final double MAX_DISTANCE = 100.0D; // 💡 200から100ブロックに制限を縮小
+    private static final long MAX_FLIGHT_TIME_MS = 20000L; // 飛行可能時間（20秒）
+    private static long flightStartTime = 0L;
 
     public static boolean isDroneMode() {
         return isDroneMode;
@@ -39,7 +39,7 @@ public class ClientCameraHandler {
         if (!isDroneMode) {
             // --- ドローンモード開始 ---
             isDroneMode = true;
-            flightStartTime = System.currentTimeMillis(); // 💡 起動した瞬間の時刻（ミリ秒）を記録
+            flightStartTime = System.currentTimeMillis();
             originalCameraEntity = mc.getCameraEntity();
             originalPlayerYaw = mc.player.getYRot();
             originalPlayerPitch = mc.player.getXRot();
@@ -64,7 +64,7 @@ public class ClientCameraHandler {
 
                 mc.setCameraEntity(cameraDummy);
             }
-            mc.player.displayClientMessage(new TextComponent("ドローン視点：起動 (制限時間: 20秒 / 距離: 200m)"), true);
+            mc.player.displayClientMessage(new TextComponent("ドローン視点：起動 (制限時間: 20秒 / 距離: 100m)"), true);
 
         } else {
             // --- ドローンモード終了 ---
@@ -100,33 +100,45 @@ public class ClientCameraHandler {
         Minecraft mc = Minecraft.getInstance();
         if (!isDroneMode || cameraDummy == null || mc.player == null) return;
 
-        // 💡 1. 時間制限（バッテリー）のチェックをミリ秒計算に変更
-        long elapsedMs = System.currentTimeMillis() - flightStartTime; // 起動してからの経過時間
+        // 1. 時間制限（バッテリー）のチェック
+        long elapsedMs = System.currentTimeMillis() - flightStartTime;
         if (elapsedMs >= MAX_FLIGHT_TIME_MS) {
             mc.player.displayClientMessage(new TextComponent("バッテリー切れ：ドローンが強制シャットダウンしました").withStyle(ChatFormatting.RED), false);
             toggleDroneMode();
             return;
         }
 
-        // 残り秒数の計算 (ミリ秒から秒に変換)
-        long remainingSeconds = (MAX_FLIGHT_TIME_MS - elapsedMs) / 1000L;
-        if (remainingSeconds <= 3 && remainingSeconds > 0) {
-            mc.player.displayClientMessage(new TextComponent("【警告】バッテリー残量わずか！ 残り " + remainingSeconds + " 秒").withStyle(ChatFormatting.GOLD), true);
-        }
-
         // 2. 距離制限（電波届く範囲）のチェック
         double distanceSq = mc.player.distanceToSqr(droneX, droneY, droneZ);
         if (distanceSq > MAX_DISTANCE * MAX_DISTANCE) {
-            mc.player.displayClientMessage(new TextComponent("通信途絶：最大通信距離（200m）を超えました").withStyle(ChatFormatting.RED), false);
+            mc.player.displayClientMessage(new TextComponent("通信途絶：最大通信距離（100m）を超えました").withStyle(ChatFormatting.RED), false);
             toggleDroneMode();
             return;
         }
 
-        // 3. マウス操作によるプレイヤーの回転を取得
+        // 💡 3. 【新機能】現在の距離と残り時間を画面下（アクションバー）に常時表示
+        double currentDistance = Math.sqrt(distanceSq); // 平方根を計算して実際のメートル（マス数）にする
+        long remainingSeconds = (MAX_FLIGHT_TIME_MS - elapsedMs) / 1000L;
+
+        // 表示する文字の作成 (例: "【ドローンステータス】 距離: 45.2m / 100m | 残り時間: 15秒")
+        String statusText = String.format("【ドローン】 距離: %.1fm / 100m | 残り時間: %d秒", currentDistance, remainingSeconds);
+        TextComponent message = new TextComponent(statusText);
+
+        // 残り時間が少なくなったら文字を金色(警告色)にする
+        if (remainingSeconds <= 5) {
+            message.withStyle(ChatFormatting.GOLD);
+        } else {
+            message.withStyle(ChatFormatting.AQUA);
+        }
+        // 第二引数を「true」にすることで、チャット欄ではなく画面下のアクションバーに固定表示させます
+        mc.player.displayClientMessage(message, true);
+
+
+        // 4. マウス操作によるプレイヤーの回転を取得
         float currentYaw = mc.player.getYRot();
         float currentPitch = mc.player.getXRot();
 
-        // 4. キー入力によるドローンの移動計算
+        // 5. キー入力によるドローンの移動計算
         Options options = mc.options;
         double moveForward = 0.0D;
         double moveStrafe = 0.0D;
@@ -154,7 +166,7 @@ public class ClientCameraHandler {
             droneZ += (fZ + sZ) * MOVE_SPEED;
         }
 
-        // 5. カメラ（ダミー）の座標と角度を更新
+        // 6. カメラ（ダミー）の座標と角度を更新
         cameraDummy.xo = cameraDummy.getX();
         cameraDummy.yo = cameraDummy.getY();
         cameraDummy.zo = cameraDummy.getZ();
@@ -166,7 +178,7 @@ public class ClientCameraHandler {
         cameraDummy.yRotO = mc.player.yRotO + 180.0F;
         cameraDummy.xRotO = mc.player.xRotO;
 
-        // 6. 下にいるプレイヤー本体の同期
+        // 7. 下にいるプレイヤー本体の同期
         mc.player.setDeltaMovement(0, 0, 0);
         mc.player.yBodyRot = originalPlayerYaw;
         mc.player.yBodyRotO = originalPlayerYaw;
