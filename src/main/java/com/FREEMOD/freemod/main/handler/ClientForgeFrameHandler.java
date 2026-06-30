@@ -1,7 +1,9 @@
 package com.FREEMOD.freemod.main.handler;
 
+import com.FREEMOD.freemod.main.config.ModKeyBindings;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
@@ -56,6 +58,22 @@ public class ClientForgeFrameHandler {
     public static void onRenderHand(RenderHandEvent event){
         if (ClientCameraHandler.isDroneMode()){
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onKeyInput(InputEvent.KeyInputEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+
+        // インベントリやメニューを開いていない（ゲーム画面を操作している）ときだけ反応させる
+        if (mc.screen == null && mc.player != null) {
+            // 登録したキー（右CTRL）が押されたかを判定
+            if (ModKeyBindings.droneExitKey.consumeClick()) {
+                // ドローンモード中であれば、トグル（終了）させる
+                if (ClientCameraHandler.isDroneMode()) {
+                    ClientCameraHandler.toggleDroneMode();
+                }
+            }
         }
     }
 }
