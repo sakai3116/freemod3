@@ -1,5 +1,6 @@
 package com.FREEMOD.freemod.main.handler;
 
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.world.entity.Entity;
@@ -73,6 +74,10 @@ public class ClientCameraHandler {
                 mc.player.setXRot(originalPlayerPitch);
                 mc.player.yRotO = originalPlayerYaw;
                 mc.player.xRotO = originalPlayerPitch;
+            }
+
+            if (mc.options != null) {
+                mc.options.setCameraType(CameraType.FIRST_PERSON);
             }
 
             if (cameraDummy != null) {
