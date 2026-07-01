@@ -1,6 +1,7 @@
 package com.FREEMOD.freemod.register;
 
 
+import com.FREEMOD.freemod.entity.DroneEntity;
 import com.FREEMOD.freemod.entity.FastShotSkeleton;
 import com.FREEMOD.freemod.main.FreeMod;
 import net.minecraft.world.entity.EntityType;
@@ -19,6 +20,14 @@ public class EntityRegister {
                     () -> EntityType.Builder.of(FastShotSkeleton::new, MobCategory.MONSTER)
                             .sized(0.6F, 1.99F) // スケルトンの標準サイズ
                             .build("fast_shot_skeleton")
+            );
+
+    // 💡 ドローンエンティティの登録を追加
+    public static final RegistryObject<EntityType<DroneEntity>> DRONE =
+            ENTITY_TYPES.register("drone",
+                    () -> EntityType.Builder.<DroneEntity>of(DroneEntity::new, MobCategory.MISC)
+                            .sized(1.375F, 0.5625F) // ボート基準のサイズ（当たり判定）
+                            .build("drone")
             );
 
     public static void register(IEventBus eventBus) {

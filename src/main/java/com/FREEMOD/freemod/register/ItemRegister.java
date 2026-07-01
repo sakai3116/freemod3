@@ -1,6 +1,7 @@
 package com.FREEMOD.freemod.register;
 
 import com.FREEMOD.freemod.entity.renderer.CustomChestItemRenderer;
+import com.FREEMOD.freemod.item.DroneCameraItem;
 import com.FREEMOD.freemod.item.spawnegg.FastShotSkeletonSpawnEgg;
 import com.FREEMOD.freemod.item.tool.WorldLineItem;
 import com.FREEMOD.freemod.main.FreeMod;
@@ -26,6 +27,7 @@ public class ItemRegister {
             () -> new Item(new Item.Properties().tab(FreeMod.FREEMOD_TAB)));
     public static final RegistryObject<Item> PLATINUM_INGOT = ITEMS.register("platinum_ingot",
             () -> new Item(new Item.Properties().tab(FreeMod.FREEMOD_TAB)));
+    public static final RegistryObject<Item> DRONE_CAMERA = ITEMS.register("drone_camera", DroneCameraItem::new);
 
     // spawn egg
     public static final RegistryObject<Item> FAST_SHOT_SKELETON_SPAWN_EGG = ITEMS.register("fast_shot_skeleton_spawn_egg", () -> new FastShotSkeletonSpawnEgg(() -> EntityRegister.FAST_SHOT_SKELETON.get(), 0xFFFFFF, 0xFFFFFF, new Item.Properties().tab(FreeMod.FREEMOD_TAB)));
