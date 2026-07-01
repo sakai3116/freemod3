@@ -23,13 +23,19 @@ public class ClientCameraHandler {
     private static double droneX = 0.0D;
     private static double droneY = 0.0D;
     private static double droneZ = 0.0D;
-    private static final double MOVE_SPEED = 0.12D;
+
+    // 💡 速度をキビキビ動く適正値（0.22）に固定
+    private static final double MOVE_SPEED = 0.22D;
     private static final double MAX_DISTANCE = 100.0D;
     private static final long MAX_FLIGHT_TIME_MS = 20000L;
     private static long flightStartTime = 0L;
 
     private static final double CAMERA_BACK_OFFSET = 3.5D;
     private static final double CAMERA_UP_OFFSET = 1.2D;
+
+    // 滑らかな旋回用の変数
+    private static float smoothedYaw = 0.0F;
+    private static float smoothedPitch = 0.0F;
 
     public static boolean isDroneMode() {
         return isDroneMode;
@@ -47,8 +53,11 @@ public class ClientCameraHandler {
             originalPlayerYaw = mc.player.getYRot();
             originalPlayerPitch = mc.player.getXRot();
 
+            smoothedYaw = originalPlayerYaw;
+            smoothedPitch = originalPlayerPitch;
+
             droneX = mc.player.getX();
-            droneY = mc.player.getY() + 2.0D; // プレイヤーの少し上(2マス)からスタート
+            droneY = mc.player.getY() + 2.0D;
             droneZ = mc.player.getZ();
 
             Entity entity = EntityRegister.DRONE.get().create(mc.level);
@@ -58,12 +67,16 @@ public class ClientCameraHandler {
                 droneBodyEntity.noPhysics = true;
                 droneBodyEntity.setYRot(originalPlayerYaw);
                 droneBodyEntity.setXRot(originalPlayerPitch);
+
+                droneBodyEntity.xo = droneX;
+                droneBodyEntity.yo = droneY;
+                droneBodyEntity.zo = droneZ;
+
                 mc.level.putNonPlayerEntity(droneBodyEntity.getId(), droneBodyEntity);
             }
 
             cameraDummy = EntityType.MARKER.create(mc.level);
             if (cameraDummy != null) {
-                // 💡 組み込み：起動した瞬間のカメラの位置を、最初からドローンの「真後ろ」に計算して配置
                 float yawRad = originalPlayerYaw * ((float)Math.PI / 180F);
                 float pitchRad = originalPlayerPitch * ((float)Math.PI / 180F);
 
@@ -74,7 +87,10 @@ public class ClientCameraHandler {
                 cameraDummy.setPos(initCamX, initCamY, initCamZ);
                 cameraDummy.noPhysics = true;
 
-                // 💡 組み込み：カメラの向きを180度反転させて、最初からドローンの背中を捉える
+                cameraDummy.xo = initCamX;
+                cameraDummy.yo = initCamY;
+                cameraDummy.zo = initCamZ;
+
                 cameraDummy.setYRot(originalPlayerYaw + 180.0F);
                 cameraDummy.setXRot(originalPlayerPitch);
 
@@ -95,7 +111,6 @@ public class ClientCameraHandler {
                 mc.player.setXRot(originalPlayerPitch);
                 mc.player.yRotO = originalPlayerYaw;
                 mc.player.xRotO = originalPlayerPitch;
-                // 💡 物理移動ロックを解除（動けないバグの修正）
                 mc.player.setDeltaMovement(Vec3.ZERO);
             }
 
@@ -144,9 +159,13 @@ public class ClientCameraHandler {
         message.withStyle(remainingSeconds <= 5 ? ChatFormatting.GOLD : ChatFormatting.AQUA);
         mc.player.displayClientMessage(message, true);
 
-        // 4. 回転の取得
-        float currentYaw = mc.player.getYRot();
-        float currentPitch = mc.player.getXRot();
+        // 4. マウス入力角度の取得
+        float targetYaw = mc.player.getYRot();
+        float targetPitch = mc.player.getXRot();
+
+        // 💡 補間係数を 0.5F（少しクイック）に設定し、レスポンスを高めつつブレをカット
+        smoothedYaw = Mth.rotLerp(0.5F, smoothedYaw, targetYaw);
+        smoothedPitch = Mth.lerp(0.5F, smoothedPitch, targetPitch);
 
         // 5. WASD移動計算
         Options options = mc.options;
@@ -162,7 +181,7 @@ public class ClientCameraHandler {
         if (options.keyShift.isDown()) moveVertical -= 1.0D;
 
         if (moveForward != 0 || moveStrafe != 0 || moveVertical != 0) {
-            float yawRad = currentYaw * ((float)Math.PI / 180F);
+            float yawRad = smoothedYaw * ((float)Math.PI / 180F);
             double sinYaw = Mth.sin(yawRad);
             double cosYaw = Mth.cos(yawRad);
 
@@ -176,36 +195,39 @@ public class ClientCameraHandler {
             droneZ += (fZ + sZ) * MOVE_SPEED;
         }
 
-        // 6. ドローン本体の座標同期
-        droneBodyEntity.xo = droneBodyEntity.getX();
-        droneBodyEntity.yo = droneBodyEntity.getY();
-        droneBodyEntity.zo = droneBodyEntity.getZ();
+        // 💡 6. 【超重要】ドローン本体（見た目）の『過去座標』と『現在座標』を同時に完全同期
+        // マイクラのレンダラーのガタツキを抑え込むための必須処理です
+        droneBodyEntity.xo = droneX;
+        droneBodyEntity.yo = droneY;
+        droneBodyEntity.zo = droneZ;
         droneBodyEntity.setPos(droneX, droneY, droneZ);
 
-        droneBodyEntity.setYRot(currentYaw);
-        droneBodyEntity.setXRot(currentPitch);
-        droneBodyEntity.yRotO = mc.player.yRotO;
-        droneBodyEntity.xRotO = mc.player.xRotO;
+        droneBodyEntity.yRotO = smoothedYaw;
+        droneBodyEntity.xRotO = smoothedPitch;
+        droneBodyEntity.setYRot(smoothedYaw);
+        droneBodyEntity.setXRot(smoothedPitch);
 
-        // 7. カメラ（視点）の追従計算
-        float yawRad = currentYaw * ((float)Math.PI / 180F);
-        float pitchRad = currentPitch * ((float)Math.PI / 180F);
+        // 7. カメラ（視点）の追従座標の計算
+        float yawRad = smoothedYaw * ((float)Math.PI / 180F);
+        float pitchRad = smoothedPitch * ((float)Math.PI / 180F);
 
         double camX = droneX - (Mth.sin(yawRad) * Mth.cos(pitchRad) * CAMERA_BACK_OFFSET);
         double camZ = droneZ + (Mth.cos(yawRad) * Mth.cos(pitchRad) * CAMERA_BACK_OFFSET);
         double camY = droneY - (Mth.sin(pitchRad) * CAMERA_BACK_OFFSET) + CAMERA_UP_OFFSET;
 
-        cameraDummy.xo = cameraDummy.getX();
-        cameraDummy.yo = cameraDummy.getY();
-        cameraDummy.zo = cameraDummy.getZ();
+        // 💡 8. 【超重要】カメラダミーの『過去座標』と『現在座標』も完全に一致させる
+        // これにより、旋回しながら移動したときの背景の激しいカクツキ・残像感が消滅します
+        cameraDummy.xo = camX;
+        cameraDummy.yo = camY;
+        cameraDummy.zo = camZ;
         cameraDummy.setPos(camX, camY, camZ);
 
-        cameraDummy.setYRot(currentYaw + 180.0F);
-        cameraDummy.setXRot(currentPitch);
-        cameraDummy.yRotO = mc.player.yRotO + 180.0F;
-        cameraDummy.xRotO = mc.player.xRotO;
+        cameraDummy.yRotO = smoothedYaw + 180.0F;
+        cameraDummy.xRotO = smoothedPitch;
+        cameraDummy.setYRot(smoothedYaw + 180.0F);
+        cameraDummy.setXRot(smoothedPitch);
 
-        // 8. 💡 モード中のみプレイヤー本体の物理ベクトルを完全に静止させる
+        // 9. モード中のみプレイヤー本体の物理ベクトルを完全に静止させる
         if (isDroneMode) {
             mc.player.setDeltaMovement(0, 0, 0);
             mc.player.yBodyRot = originalPlayerYaw;
