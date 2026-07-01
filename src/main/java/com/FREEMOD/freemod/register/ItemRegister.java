@@ -1,6 +1,8 @@
 package com.FREEMOD.freemod.register;
 
+import com.FREEMOD.freemod.effect.ParalyzeEffect;
 import com.FREEMOD.freemod.entity.renderer.CustomChestItemRenderer;
+import com.FREEMOD.freemod.item.ParalyzeEffectItem;
 import com.FREEMOD.freemod.item.spawnegg.FastShotSkeletonSpawnEgg;
 import com.FREEMOD.freemod.item.tool.WorldLineItem;
 import com.FREEMOD.freemod.main.FreeMod;
@@ -18,6 +20,9 @@ public class ItemRegister {
 
     //tool
     public static final RegistryObject<Item> WORLD_LINE = ITEMS.register("world_line", WorldLineItem::new);
+
+    public static final RegistryObject<Item> PARALYZE_EFFECT_ITEM = ITEMS.register("paralyze_effect_item", ParalyzeEffectItem::new);
+
     public static final RegistryObject<Item> ACID_BUCKET = ITEMS.register("acid_bucket",
             () -> new BucketItem(FluidRegister.ACID_FLUID,new Item.Properties().tab(FreeMod.FREEMOD_TAB).stacksTo(1)));
     public static final RegistryObject<Item> NEKTAR_BUCKET = ITEMS.register("nektar_bucket",
