@@ -1,5 +1,7 @@
 package com.FREEMOD.freemod.main.handler;
 
+import com.FREEMOD.freemod.entity.DroneEntity;
+import com.FREEMOD.freemod.register.EntityRegister;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.CameraType;
@@ -8,25 +10,26 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.ChatFormatting;
+import net.minecraft.world.phys.Vec3;
 
 public class ClientCameraHandler {
     private static boolean isDroneMode = false;
+    private static DroneEntity droneBodyEntity = null;
     private static Entity cameraDummy = null;
     private static Entity originalCameraEntity = null;
 
     private static float originalPlayerYaw = 0.0F;
     private static float originalPlayerPitch = 0.0F;
-
     private static double droneX = 0.0D;
     private static double droneY = 0.0D;
     private static double droneZ = 0.0D;
-
     private static final double MOVE_SPEED = 0.12D;
-
-    // 💡 制限用の定数を変更
-    private static final double MAX_DISTANCE = 100.0D; // 💡 200から100ブロックに制限を縮小
-    private static final long MAX_FLIGHT_TIME_MS = 20000L; // 飛行可能時間（20秒）
+    private static final double MAX_DISTANCE = 100.0D;
+    private static final long MAX_FLIGHT_TIME_MS = 20000L;
     private static long flightStartTime = 0L;
+
+    private static final double CAMERA_BACK_OFFSET = 3.5D;
+    private static final double CAMERA_UP_OFFSET = 1.2D;
 
     public static boolean isDroneMode() {
         return isDroneMode;
@@ -44,28 +47,41 @@ public class ClientCameraHandler {
             originalPlayerYaw = mc.player.getYRot();
             originalPlayerPitch = mc.player.getXRot();
 
-            // 初期位置をプレイヤーの頭上20マスに設定
             droneX = mc.player.getX();
-            droneY = mc.player.getY() + 20.0D;
+            droneY = mc.player.getY() + 2.0D; // プレイヤーの少し上(2マス)からスタート
             droneZ = mc.player.getZ();
+
+            Entity entity = EntityRegister.DRONE.get().create(mc.level);
+            if (entity instanceof DroneEntity) {
+                droneBodyEntity = (DroneEntity) entity;
+                droneBodyEntity.setPos(droneX, droneY, droneZ);
+                droneBodyEntity.noPhysics = true;
+                droneBodyEntity.setYRot(originalPlayerYaw);
+                droneBodyEntity.setXRot(originalPlayerPitch);
+                mc.level.putNonPlayerEntity(droneBodyEntity.getId(), droneBodyEntity);
+            }
 
             cameraDummy = EntityType.MARKER.create(mc.level);
             if (cameraDummy != null) {
-                cameraDummy.setPos(droneX, droneY, droneZ);
+                // 💡 組み込み：起動した瞬間のカメラの位置を、最初からドローンの「真後ろ」に計算して配置
+                float yawRad = originalPlayerYaw * ((float)Math.PI / 180F);
+                float pitchRad = originalPlayerPitch * ((float)Math.PI / 180F);
+
+                double initCamX = droneX - (Mth.sin(yawRad) * Mth.cos(pitchRad) * CAMERA_BACK_OFFSET);
+                double initCamZ = droneZ + (Mth.cos(yawRad) * Mth.cos(pitchRad) * CAMERA_BACK_OFFSET);
+                double initCamY = droneY - (Mth.sin(pitchRad) * CAMERA_BACK_OFFSET) + CAMERA_UP_OFFSET;
+
+                cameraDummy.setPos(initCamX, initCamY, initCamZ);
                 cameraDummy.noPhysics = true;
 
-                cameraDummy.setYRot(originalPlayerYaw);
+                // 💡 組み込み：カメラの向きを180度反転させて、最初からドローンの背中を捉える
+                cameraDummy.setYRot(originalPlayerYaw + 180.0F);
                 cameraDummy.setXRot(originalPlayerPitch);
-                cameraDummy.xo = droneX;
-                cameraDummy.yo = droneY;
-                cameraDummy.zo = droneZ;
-                cameraDummy.yRotO = originalPlayerYaw;
-                cameraDummy.xRotO = originalPlayerPitch;
 
                 mc.setCameraEntity(cameraDummy);
             }
-            mc.player.displayClientMessage(new TextComponent("ドローン視点：起動 (制限時間: 20秒 / 距離: 100m)"), true);
 
+            mc.player.displayClientMessage(new TextComponent("ドローン視点：起動 (制限時間: 20秒 / 距離: 100m)"), true);
         } else {
             // --- ドローンモード終了 ---
             isDroneMode = false;
@@ -79,10 +95,17 @@ public class ClientCameraHandler {
                 mc.player.setXRot(originalPlayerPitch);
                 mc.player.yRotO = originalPlayerYaw;
                 mc.player.xRotO = originalPlayerPitch;
+                // 💡 物理移動ロックを解除（動けないバグの修正）
+                mc.player.setDeltaMovement(Vec3.ZERO);
             }
 
             if (mc.options != null) {
                 mc.options.setCameraType(CameraType.FIRST_PERSON);
+            }
+
+            if (droneBodyEntity != null) {
+                droneBodyEntity.discard();
+                droneBodyEntity = null;
             }
 
             if (cameraDummy != null) {
@@ -93,14 +116,11 @@ public class ClientCameraHandler {
         }
     }
 
-    /**
-     * 毎フレーム（Renderバス）で呼び出される同期＆移動ロジック
-     */
     public static void onRenderTick(float partialTick) {
         Minecraft mc = Minecraft.getInstance();
-        if (!isDroneMode || cameraDummy == null || mc.player == null) return;
+        if (!isDroneMode || cameraDummy == null || droneBodyEntity == null || mc.player == null) return;
 
-        // 1. 時間制限（バッテリー）のチェック
+        // 1. 時間制限チェック
         long elapsedMs = System.currentTimeMillis() - flightStartTime;
         if (elapsedMs >= MAX_FLIGHT_TIME_MS) {
             mc.player.displayClientMessage(new TextComponent("バッテリー切れ：ドローンが強制シャットダウンしました").withStyle(ChatFormatting.RED), false);
@@ -108,7 +128,7 @@ public class ClientCameraHandler {
             return;
         }
 
-        // 2. 距離制限（電波届く範囲）のチェック
+        // 2. 距離制限チェック
         double distanceSq = mc.player.distanceToSqr(droneX, droneY, droneZ);
         if (distanceSq > MAX_DISTANCE * MAX_DISTANCE) {
             mc.player.displayClientMessage(new TextComponent("通信途絶：最大通信距離（100m）を超えました").withStyle(ChatFormatting.RED), false);
@@ -116,29 +136,19 @@ public class ClientCameraHandler {
             return;
         }
 
-        // 💡 3. 【新機能】現在の距離と残り時間を画面下（アクションバー）に常時表示
-        double currentDistance = Math.sqrt(distanceSq); // 平方根を計算して実際のメートル（マス数）にする
+        // 3. アクションバー表示
+        double currentDistance = Math.sqrt(distanceSq);
         long remainingSeconds = (MAX_FLIGHT_TIME_MS - elapsedMs) / 1000L;
-
-        // 表示する文字の作成 (例: "【ドローンステータス】 距離: 45.2m / 100m | 残り時間: 15秒")
         String statusText = String.format("【ドローン】 距離: %.1fm / 100m | 残り時間: %d秒", currentDistance, remainingSeconds);
         TextComponent message = new TextComponent(statusText);
-
-        // 残り時間が少なくなったら文字を金色(警告色)にする
-        if (remainingSeconds <= 5) {
-            message.withStyle(ChatFormatting.GOLD);
-        } else {
-            message.withStyle(ChatFormatting.AQUA);
-        }
-        // 第二引数を「true」にすることで、チャット欄ではなく画面下のアクションバーに固定表示させます
+        message.withStyle(remainingSeconds <= 5 ? ChatFormatting.GOLD : ChatFormatting.AQUA);
         mc.player.displayClientMessage(message, true);
 
-
-        // 4. マウス操作によるプレイヤーの回転を取得
+        // 4. 回転の取得
         float currentYaw = mc.player.getYRot();
         float currentPitch = mc.player.getXRot();
 
-        // 5. キー入力によるドローンの移動計算
+        // 5. WASD移動計算
         Options options = mc.options;
         double moveForward = 0.0D;
         double moveStrafe = 0.0D;
@@ -166,23 +176,42 @@ public class ClientCameraHandler {
             droneZ += (fZ + sZ) * MOVE_SPEED;
         }
 
-        // 6. カメラ（ダミー）の座標と角度を更新
+        // 6. ドローン本体の座標同期
+        droneBodyEntity.xo = droneBodyEntity.getX();
+        droneBodyEntity.yo = droneBodyEntity.getY();
+        droneBodyEntity.zo = droneBodyEntity.getZ();
+        droneBodyEntity.setPos(droneX, droneY, droneZ);
+
+        droneBodyEntity.setYRot(currentYaw);
+        droneBodyEntity.setXRot(currentPitch);
+        droneBodyEntity.yRotO = mc.player.yRotO;
+        droneBodyEntity.xRotO = mc.player.xRotO;
+
+        // 7. カメラ（視点）の追従計算
+        float yawRad = currentYaw * ((float)Math.PI / 180F);
+        float pitchRad = currentPitch * ((float)Math.PI / 180F);
+
+        double camX = droneX - (Mth.sin(yawRad) * Mth.cos(pitchRad) * CAMERA_BACK_OFFSET);
+        double camZ = droneZ + (Mth.cos(yawRad) * Mth.cos(pitchRad) * CAMERA_BACK_OFFSET);
+        double camY = droneY - (Mth.sin(pitchRad) * CAMERA_BACK_OFFSET) + CAMERA_UP_OFFSET;
+
         cameraDummy.xo = cameraDummy.getX();
         cameraDummy.yo = cameraDummy.getY();
         cameraDummy.zo = cameraDummy.getZ();
-
-        cameraDummy.setPos(droneX, droneY, droneZ);
+        cameraDummy.setPos(camX, camY, camZ);
 
         cameraDummy.setYRot(currentYaw + 180.0F);
         cameraDummy.setXRot(currentPitch);
         cameraDummy.yRotO = mc.player.yRotO + 180.0F;
         cameraDummy.xRotO = mc.player.xRotO;
 
-        // 7. 下にいるプレイヤー本体の同期
-        mc.player.setDeltaMovement(0, 0, 0);
-        mc.player.yBodyRot = originalPlayerYaw;
-        mc.player.yBodyRotO = originalPlayerYaw;
-        mc.player.yHeadRot = originalPlayerYaw;
-        mc.player.yHeadRotO = originalPlayerYaw;
+        // 8. 💡 モード中のみプレイヤー本体の物理ベクトルを完全に静止させる
+        if (isDroneMode) {
+            mc.player.setDeltaMovement(0, 0, 0);
+            mc.player.yBodyRot = originalPlayerYaw;
+            mc.player.yBodyRotO = originalPlayerYaw;
+            mc.player.yHeadRot = originalPlayerYaw;
+            mc.player.yHeadRotO = originalPlayerYaw;
+        }
     }
 }

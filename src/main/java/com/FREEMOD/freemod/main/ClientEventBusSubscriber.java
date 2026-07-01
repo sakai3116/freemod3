@@ -40,7 +40,7 @@ public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void registerRender(EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(EntityRegister.FAST_SHOT_SKELETON.get(), FastShotSkeletonRenderer::new);
-        //event.registerEntityRenderer(EntityRegister.DRONE.get(), DroneRenderer::new);
+        event.registerEntityRenderer(EntityRegister.DRONE.get(), DroneRenderer::new);
     }
 
     private static void animation(FMLClientSetupEvent event){
