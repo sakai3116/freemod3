@@ -31,6 +31,7 @@ public class CameraControllerItem extends Item {
         super(new Properties().tab(FreeMod.FREEMOD_TAB).stacksTo(1));
     }
 
+    // 1. ブロックを通常右クリックしたとき（カメラの登録）
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
@@ -38,20 +39,27 @@ public class CameraControllerItem extends Item {
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
 
+        // 覗き込み中（isViewing）はここでは処理しないようにパスする
+        if (isViewing) return InteractionResult.PASS;
+
         if (level.getBlockState(pos).getBlock() instanceof CameraBlock) {
-            if (!level.isClientSide() && player != null) {
-                CompoundTag nbt = stack.getOrCreateTag();
-                nbt.putInt("CamX", pos.getX());
-                nbt.putInt("CamY", pos.getY());
-                nbt.putInt("CamZ", pos.getZ());
-                nbt.putBoolean("Linked", true);
-                player.displayClientMessage(new TextComponent("カメラをコントローラーに同期しました: " + pos.toShortString()), true);
+            // スニークしていない通常右クリックの時だけ登録処理を行う
+            if (player != null && !player.isShiftKeyDown()) {
+                if (!level.isClientSide()) {
+                    CompoundTag nbt = stack.getOrCreateTag();
+                    nbt.putInt("CamX", pos.getX());
+                    nbt.putInt("CamY", pos.getY());
+                    nbt.putInt("CamZ", pos.getZ());
+                    nbt.putBoolean("Linked", true);
+                    player.displayClientMessage(new TextComponent("カメラをコントローラーに同期しました: " + pos.toShortString()), true);
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return super.useOn(context);
     }
 
+    // 2. 空中（またはブロックに対して）SHIFT+右クリックしたとき（視点切り替え）
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -59,43 +67,52 @@ public class CameraControllerItem extends Item {
 
         if (nbt != null && nbt.getBoolean("Linked")) {
             if (level.isClientSide()) {
-                ClientProxy.toggleCameraView(level, nbt, player);
+                // SHIFTを押しながら右クリックしたとき ➡ カメラを覗く
+                if (player.isShiftKeyDown() && !isViewing) {
+                    ClientProxy.toggleCameraView(level, nbt, player, true);
+                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                }
+                // 通常右クリックで、すでにカメラ接続中のとき ➡ 解除する
+                else if (!player.isShiftKeyDown() && isViewing) {
+                    ClientProxy.toggleCameraView(level, nbt, player, false);
+                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                }
             }
+            // クライアント側でのトグルに合わせ、サーバー側もsidedSuccessでパケットの不整合を防ぐ
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
-        } else {
-            if (!level.isClientSide()) {
-                player.displayClientMessage(new TextComponent("カメラが同期されていません。ブロックを右クリックしてください。"), true);
-            }
         }
+
         return InteractionResultHolder.pass(stack);
     }
 
     private static class ClientProxy {
-        private static void toggleCameraView(Level level, CompoundTag nbt, Player player) {
+        private static void toggleCameraView(Level level, CompoundTag nbt, Player player, boolean wantToView) {
             net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 
-            if (isViewing) {
+            if (!wantToView && isViewing) {
                 isViewing = false;
                 activeCamera = null;
                 mc.setCameraEntity(player);
-                player.displayClientMessage(new TextComponent("プレイヤー視点に戻りました。"), true);
+                player.displayClientMessage(new TextComponent("カメラ接続を解除し、プレイヤー視点に戻りました。"), true);
                 return;
             }
 
-            int x = nbt.getInt("CamX");
-            int y = nbt.getInt("CamY");
-            int z = nbt.getInt("CamZ");
-            BlockPos targetPos = new BlockPos(x, y, z);
+            if (wantToView && !isViewing) {
+                int x = nbt.getInt("CamX");
+                int y = nbt.getInt("CamY");
+                int z = nbt.getInt("CamZ");
+                BlockPos targetPos = new BlockPos(x, y, z);
 
-            List<CameraEntity> cameras = level.getEntitiesOfClass(CameraEntity.class, new AABB(targetPos).inflate(1.0D));
-            if (!cameras.isEmpty()) {
-                CameraEntity targetCamera = cameras.get(0);
-                isViewing = true;
-                activeCamera = targetCamera;
-                mc.setCameraEntity(targetCamera);
-                player.displayClientMessage(new TextComponent("カメラ視点に接続しました。"), true);
-            } else {
-                player.displayClientMessage(new TextComponent("カメラが見つかりません（チャンクが読み込まれていないか、破壊されています）"), true);
+                List<CameraEntity> cameras = level.getEntitiesOfClass(CameraEntity.class, new AABB(targetPos).inflate(1.0D));
+                if (!cameras.isEmpty()) {
+                    CameraEntity targetCamera = cameras.get(0);
+                    isViewing = true;
+                    activeCamera = targetCamera;
+                    mc.setCameraEntity(targetCamera);
+                    player.displayClientMessage(new TextComponent("カメラ視点に接続しました（解除: 通常右クリック）"), true);
+                } else {
+                    player.displayClientMessage(new TextComponent("カメラが見つかりません。"), true);
+                }
             }
         }
     }
