@@ -41,7 +41,7 @@ public class ClientEventBusSubscriber {
     public static void registerRender(EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(EntityRegister.FAST_SHOT_SKELETON.get(), FastShotSkeletonRenderer::new);
         event.registerEntityRenderer(EntityRegister.DRONE.get(), DroneRenderer::new);
-    }
+        event.registerEntityRenderer(EntityRegister.CAMERA.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);    }
 
     private static void animation(FMLClientSetupEvent event){
         event.enqueueWork(() -> {
