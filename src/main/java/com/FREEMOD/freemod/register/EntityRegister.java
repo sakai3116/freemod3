@@ -1,6 +1,7 @@
 package com.FREEMOD.freemod.register;
 
 
+import com.FREEMOD.freemod.entity.CameraEntity;
 import com.FREEMOD.freemod.entity.DroneEntity;
 import com.FREEMOD.freemod.entity.FastShotSkeleton;
 import com.FREEMOD.freemod.main.FreeMod;
@@ -28,6 +29,13 @@ public class EntityRegister {
                     () -> EntityType.Builder.<DroneEntity>of(DroneEntity::new, MobCategory.MISC)
                             .sized(1.375F, 0.5625F) // ボート基準のサイズ（当たり判定）
                             .build("drone")
+            );
+
+    public static final RegistryObject<EntityType<CameraEntity>> CAMERA =
+            ENTITY_TYPES.register("camera",
+                    () -> EntityType.Builder.<CameraEntity>of(CameraEntity::new, MobCategory.MISC)
+                            .sized(1.375F, 0.5625F)
+                            .build("camera")
             );
 
     public static void register(IEventBus eventBus) {

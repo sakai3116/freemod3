@@ -1,5 +1,6 @@
 package com.FREEMOD.freemod.register;
 
+import com.FREEMOD.freemod.block.CameraBlock;
 import com.FREEMOD.freemod.block.CustomChestBlock;
 import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
 import com.FREEMOD.freemod.block.fluid.AcidLiquidBlock;
@@ -80,6 +81,9 @@ public class BlockRegister {
 
     public static final RegistryObject<ChestBlock> CUSTOM_CHEST_BLOCK = BLOCKS.register("custom_chest_block",
             () -> new CustomChestBlock(BlockBehaviour.Properties.copy(Blocks.CHEST)));
+
+    public static final RegistryObject<Block> CAMERA_BLOCK = registerBlockItem("camera_block",
+            () -> new CameraBlock(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
 
     // ブロックアイテム作成用メソッド 基本的に触らない
     private static <T extends Block> RegistryObject<T> registerBlockItem(String name, Supplier<T> supplier) {
