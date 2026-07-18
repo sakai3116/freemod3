@@ -21,10 +21,7 @@ public class ClientCameraViewHandler {
             Player player = mc.player;
             CameraEntity camera = CameraControllerItem.getActiveCamera();
             if (player != null && camera != null) {
-                camera.setXRot(player.getXRot());
-                camera.setYRot(player.getYRot());
-                camera.xRotO = player.xRotO;
-                camera.yRotO = player.yRotO;
+
                 event.setPitch(player.getXRot());
                 event.setYaw(player.getYRot());
             }

@@ -112,8 +112,7 @@ public class CameraControllerItem extends Item {
                     activeCamera = targetCamera;
 
                     // 覗いた瞬間のカメラの初期正面を、現在のプレイヤーの向きにリセット
-                    targetCamera.setXRot(player.getXRot());
-                    targetCamera.setYRot(player.getYRot());
+
 
                     mc.setCameraEntity(targetCamera);
                     player.displayClientMessage(new TextComponent("カメラ視点に接続しました（解除: 通常右クリック）"), true);
