@@ -39,11 +39,11 @@ public class CameraControllerItem extends Item {
         ItemStack stack = context.getItemInHand();
         Player player = context.getPlayer();
 
-        // すでにカメラを覗いている最中なら、設置登録処理をスキップして空中右クリック(use)側へ流す
+        // 覗き込み中（isViewing）はここでは処理しないようにパスする
         if (isViewing) return InteractionResult.PASS;
 
         if (level.getBlockState(pos).getBlock() instanceof CameraBlock) {
-            // 【重要】スニーク（SHIFT）していない時だけ登録する
+            // スニークしていない通常右クリックの時だけ登録処理を行う
             if (player != null && !player.isShiftKeyDown()) {
                 if (!level.isClientSide()) {
                     CompoundTag nbt = stack.getOrCreateTag();
@@ -67,25 +67,21 @@ public class CameraControllerItem extends Item {
 
         if (nbt != null && nbt.getBoolean("Linked")) {
             if (level.isClientSide()) {
-                // 【解除処理】すでにカメラを覗いている状態で、通常右クリック（SHIFTなし）されたら解除
-                if (isViewing && !player.isShiftKeyDown()) {
-                    ClientProxy.toggleCameraView(level, nbt, player, false);
-                    player.getCooldowns().addCooldown(this, 10); // チャタリング暴発防止
-                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
-                }
-                // 【起動処理】まだ覗いていない状態で、SHIFT+右クリックされたらカメラを覗く
-                else if (!isViewing && player.isShiftKeyDown()) {
+                // SHIFTを押しながら右クリックしたとき ➡ カメラを覗く
+                if (player.isShiftKeyDown() && !isViewing) {
                     ClientProxy.toggleCameraView(level, nbt, player, true);
-                    player.getCooldowns().addCooldown(this, 10); // チャタリング暴発防止
+                    return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+                }
+                // 通常右クリックで、すでにカメラ接続中のとき ➡ 解除する
+                else if (!player.isShiftKeyDown() && isViewing) {
+                    ClientProxy.toggleCameraView(level, nbt, player, false);
                     return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
                 }
             }
+            // クライアント側でのトグルに合わせ、サーバー側もsidedSuccessでパケットの不整合を防ぐ
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
-        } else {
-            if (!level.isClientSide()) {
-                player.displayClientMessage(new TextComponent("カメラが同期されていません。ブロックを右クリックしてください。"), true);
-            }
         }
+
         return InteractionResultHolder.pass(stack);
     }
 
