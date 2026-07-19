@@ -8,12 +8,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class CameraBlock extends Block {
+import java.util.Properties;
+
+public class CameraBlock extends HorizontalDirectionalBlock {
     public CameraBlock(Properties properties) {
+        // 1. 親クラス（HorizontalDirectionalBlock）に properties を渡す
         super(properties);
+
+        // 2. ブロックのデフォルト状態として、向き（FACING）を北（NORTH）に初期設定する
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     // ブロックがプレイヤーによって設置された時に呼び出されるバニラのメソッド
@@ -22,15 +29,32 @@ public class CameraBlock extends Block {
         if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
             CameraEntity camera = EntityRegister.CAMERA.get().create(serverLevel);
             if (camera != null) {
-                float blockYaw = 0.0F;
+                // デフォルトの向き（placerがnullの場合の安全策）
+                Direction facing = Direction.NORTH;
                 if (placer != null) {
-                    // 設置したプレイヤーの水平方向（南:0, 西:90, 北:180, 東:270）を取得
-                    Direction facing = placer.getDirection();
-                    blockYaw = facing.toYRot();
+                    // 設置したプレイヤーの水平方向の逆を取得
+                    facing = placer.getDirection().getOpposite();
                 }
 
-                // エンティティをブロックの中心に、固定された方角（blockYaw）でスポーンさせる
-                camera.moveTo(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, blockYaw, 0.0F);
+                // 座標計算の追加
+                double x = pos.getX() + 0.5;
+                double y = pos.getY() + 0.62;
+                double z = pos.getZ() + 0.5;
+
+                double offset = 0.36;
+
+                x += facing.getStepX() * offset;
+                z += facing.getStepZ() * offset;
+
+                // 最後の引数を「0.0F」に修正（float型を明示）
+                camera.moveTo(
+                        x,
+                        y,
+                        z,
+                        facing.toYRot(),
+                        0.0F
+                );
+
                 serverLevel.addFreshEntity(camera);
             }
         }
@@ -51,5 +75,11 @@ public class CameraBlock extends Block {
                     .forEach(net.minecraft.world.entity.Entity::discard);
         }
         super.onRemove(state, level, pos, newState, isMoving);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
+        // ブロックにFACING（向き）のプロパティを登録する
+        builder.add(FACING);
     }
 }

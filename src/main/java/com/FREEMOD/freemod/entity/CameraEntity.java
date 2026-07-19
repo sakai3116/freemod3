@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -13,6 +12,11 @@ import net.minecraftforge.network.NetworkHooks;
 public class CameraEntity extends Entity {
 
     private float lockYaw;
+    private float cameraYawOffset = 0;
+    private float cameraPitchOffset = 0;
+    private double lastMouseX;
+    private double lastMouseY;
+    private boolean firstTick = true;
 
     public CameraEntity(EntityType<?> type, Level level) {
         super(type, level);
@@ -22,7 +26,6 @@ public class CameraEntity extends Entity {
     @Override
     public void moveTo(double x,double y,double z,float yaw,float pitch){
         super.moveTo(x,y,z,yaw,pitch);
-
         this.lockYaw = yaw;
     }
 
@@ -34,7 +37,6 @@ public class CameraEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag){
         lockYaw = tag.getFloat("LockYaw");
-
         setYRot(lockYaw);
     }
 
@@ -42,28 +44,74 @@ public class CameraEntity extends Entity {
     public void tick() {
         super.tick();
 
-        // 💡 ここを追加：クライアントのMinecraftインスタンスを取得
+        if (!level.isClientSide()) return;
+
         Minecraft mc = Minecraft.getInstance();
 
-        // mc が null でないこと、およびプレイヤーが存在することを確認（マルチプレイ等でのクラッシュ防止）
-        if (mc != null && mc.player != null && mc.getCameraEntity() == this) {
+        if (mc.player == null) return;
+        if (mc.getCameraEntity() != this) return;
 
-            float deltaYaw = Mth.wrapDegrees(
-                    mc.player.getYRot() - lockYaw);
+        double mouseX = mc.mouseHandler.xpos();
+        double mouseY = mc.mouseHandler.ypos();
 
-            deltaYaw = Mth.clamp(deltaYaw, -90, 90);
+        if (firstTick) {
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            firstTick = false;
 
-            setYRot(lockYaw + deltaYaw);
-
-            setXRot(Mth.clamp(
-                    mc.player.getXRot(),
-                    -60,
-                    60));
+            // === 【重要】覗いた瞬間にオフセットをゼロにし、プレイヤーの首をカメラの向き(lockYaw)に強制同期 ===
+            this.cameraYawOffset = 0.0F;
+            this.cameraPitchOffset = 0.0F;
+            mc.player.setYRot(this.lockYaw);
+            mc.player.setXRot(0.0F);
+            return;
         }
+
+        double deltaX = mouseX - lastMouseX;
+        double deltaY = mouseY - lastMouseY;
+
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+
+        float sensitivity = (float)mc.options.sensitivity * 0.18F;
+
+        cameraYawOffset += deltaX * sensitivity;
+        cameraPitchOffset += deltaY * sensitivity;
+
+        //cameraYawOffset = Mth.clamp(cameraYawOffset, -45F, 45F);
+        //cameraPitchOffset = Mth.clamp(cameraPitchOffset, -30F, 30F);
+
+        cameraYawOffset = Mth.wrapDegrees(cameraYawOffset);
+
+        cameraPitchOffset = Mth.clamp(cameraPitchOffset, -85F, 85F);
+
+        float finalYaw = Mth.wrapDegrees(lockYaw + cameraYawOffset);
+
+        setYRot(finalYaw);
+        yRotO = finalYaw;
+
+        setXRot(cameraPitchOffset);
+        xRotO = cameraPitchOffset;
     }
 
     @Override protected void defineSynchedData() {}
 
+    // コントローラーアイテムから呼び出せるようにpublicにする
+    public void resetFirstTick() {
+        this.firstTick = true;
+    }
+
+    public float getLockYaw() {
+        return lockYaw;
+    }
+
+    public float getYawOffset() {
+        return cameraYawOffset;
+    }
+
+    public float getPitchOffset() {
+        return cameraPitchOffset;
+    }
 
     @Override
     public Packet<?> getAddEntityPacket() { return NetworkHooks.getEntitySpawningPacket(this); }

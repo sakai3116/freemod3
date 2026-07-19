@@ -111,13 +111,24 @@ public class CameraControllerItem extends Item {
                     isViewing = true;
                     activeCamera = targetCamera;
 
-                    // 覗いた瞬間のカメラの初期正面を、現在のプレイヤーの向きにリセット
+                    // === 【重要】ここから追加・修正 ===
+                    // 1. マウスの急激な跳ね上がりを防ぐ（前回追加したもの）
+                    targetCamera.resetFirstTick();
 
+                    // 2. カメラの現在のベース角度（lockYaw）を取得
+                    float baseYaw = targetCamera.getLockYaw();
+
+                    // 3. カメラ内の相対移動オフセットをリセット（最初は正面を向く）
+                    // ※CameraEntityに設定したフィールドをここで0に初期化します
+                    //（アクセスできるようにフィールドをpublicにするか、リセット用メソッドを作ってもOKです）
+                    // ここでは直接リセットできない場合のために、プレイヤーの首をカメラの向きに強制同期させます
+
+                    player.setYRot(baseYaw);
+                    player.setXRot(0.0F);
+                    // === ここまで ===
 
                     mc.setCameraEntity(targetCamera);
                     player.displayClientMessage(new TextComponent("カメラ視点に接続しました（解除: 通常右クリック）"), true);
-                } else {
-                    player.displayClientMessage(new TextComponent("カメラが見つかりません（チャンクがアンロードされたか、破壊されています）"), true);
                 }
             }
         }

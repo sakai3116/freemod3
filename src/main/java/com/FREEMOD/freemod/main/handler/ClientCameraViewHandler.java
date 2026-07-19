@@ -16,16 +16,17 @@ public class ClientCameraViewHandler {
 
     @SubscribeEvent
     public static void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
-        Minecraft mc = Minecraft.getInstance();
-        if (CameraControllerItem.isViewing() && CameraControllerItem.getActiveCamera() != null) {
-            Player player = mc.player;
-            CameraEntity camera = CameraControllerItem.getActiveCamera();
-            if (player != null && camera != null) {
 
-                event.setPitch(player.getXRot());
-                event.setYaw(player.getYRot());
-            }
-        }
+        if (!CameraControllerItem.isViewing()) return;
+
+        CameraEntity camera =
+                CameraControllerItem.getActiveCamera();
+
+        if (camera == null) return;
+
+        event.setYaw(camera.getYRot());
+        event.setPitch(camera.getXRot());
+
     }
 
     /**
