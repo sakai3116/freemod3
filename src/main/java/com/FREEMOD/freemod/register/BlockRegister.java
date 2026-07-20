@@ -83,7 +83,7 @@ public class BlockRegister {
             () -> new CustomChestBlock(BlockBehaviour.Properties.copy(Blocks.CHEST)));
 
     public static final RegistryObject<Block> CAMERA_BLOCK = registerBlockItem("camera_block",
-            () -> new CameraBlock(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
+            () -> new CameraBlock(BlockBehaviour.Properties.copy(Blocks.GLASS).strength(9f)));
 
     // ブロックアイテム作成用メソッド 基本的に触らない
     private static <T extends Block> RegistryObject<T> registerBlockItem(String name, Supplier<T> supplier) {

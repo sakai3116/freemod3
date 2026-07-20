@@ -72,7 +72,6 @@ public class ClientEventBusSubscriber {
 
                     // portal
 
-
                     // sapling
                     BlockRegister.OBLIVION_SAPLING.get()
             );
@@ -80,7 +79,10 @@ public class ClientEventBusSubscriber {
             List<Block> translucentBlocks = Arrays.asList(
 
                     // fluid
-                    BlockRegister.NEKTAR_LIQUID_BLOCK.get()
+                    BlockRegister.NEKTAR_LIQUID_BLOCK.get(),
+
+                    // glass
+                    BlockRegister.CAMERA_BLOCK.get()
 
             );
 
