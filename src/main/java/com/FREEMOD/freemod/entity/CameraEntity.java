@@ -85,11 +85,12 @@ public class CameraEntity extends Entity {
         cameraYawOffset = Mth.wrapDegrees(cameraYawOffset);
 
         // 【修正】上下のチルト角度制限（上: -45F, 下: 75F）
-        cameraPitchOffset = Mth.clamp(cameraPitchOffset, -45F, 75F);
+        cameraPitchOffset = Mth.clamp(cameraPitchOffset, -45.0F, 75.0F);
 
+        // 重複していた Mth.clamp(..., -85F, 85F) は完全に削除されていることを確認してください！
         cameraYawOffset = Mth.wrapDegrees(cameraYawOffset);
 
-        cameraPitchOffset = Mth.clamp(cameraPitchOffset, -85F, 85F);
+        //cameraPitchOffset = Mth.clamp(cameraPitchOffset, -85F, 85F);
 
         float finalYaw = Mth.wrapDegrees(lockYaw + cameraYawOffset);
 

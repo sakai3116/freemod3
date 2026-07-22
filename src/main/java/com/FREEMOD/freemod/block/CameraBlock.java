@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Properties;
@@ -29,26 +30,18 @@ public class CameraBlock extends HorizontalDirectionalBlock {
         if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
             CameraEntity camera = EntityRegister.CAMERA.get().create(serverLevel);
             if (camera != null) {
-                // デフォルトの向き（placerがnullの場合の安全策）
                 Direction facing = Direction.NORTH;
                 if (placer != null) {
-                    // 設置したプレイヤーの水平方向の逆を取得
+                    // 設置したプレイヤーの逆方向（壁側）を取得
                     facing = placer.getDirection().getOpposite();
                 }
 
-                // 座標計算の修正
+                // ブロックの「中心」にエンティティを配置（offset計算は削除）
                 double x = pos.getX() + 0.5;
-
-                // 【変更】0.62 から 0.5 に変更して、高さ方向でも中心に合わせます
                 double y = pos.getY() + 0.5;
-
                 double z = pos.getZ() + 0.5;
 
-                double offset = 0.36;
-
-                x += facing.getStepX() * offset;
-                z += facing.getStepZ() * offset;
-
+                // エンティティの初期角度として facing.toYRot() を設定
                 camera.moveTo(
                         x,
                         y,
@@ -77,6 +70,12 @@ public class CameraBlock extends HorizontalDirectionalBlock {
                     .forEach(net.minecraft.world.entity.Entity::discard);
         }
         super.onRemove(state, level, pos, newState, isMoving);
+    }
+
+    // バニラブロックとしてのモデル描画を無効化し、エンティティモデル（CameraRenderer）側に任せる
+    @Override
+    public net.minecraft.world.level.block.RenderShape getRenderShape(net.minecraft.world.level.block.state.BlockState state) {
+        return net.minecraft.world.level.block.RenderShape.INVISIBLE;
     }
 
     @Override

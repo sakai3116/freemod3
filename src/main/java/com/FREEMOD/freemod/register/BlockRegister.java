@@ -75,15 +75,15 @@ public class BlockRegister {
                     .strength(5f).requiresCorrectToolForDrops(), UniformInt.of(3,7)));
 
     // other
+    public static final RegistryObject<Block> CAMERA_BLOCK = registerBlockItem("camera_block",
+            () -> new CameraBlock(BlockBehaviour.Properties.of(Material.STONE).strength(9F).noOcclusion()));
+
     public static final RegistryObject<Block> OBLIVION_PORTAL_GATE_BLOCK = registerBlockItem("oblivion_portal_gate_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
     public static final RegistryObject<Block> OBLIVION_PORTAL_BLOCK = BLOCKS.register("oblivion_portal", OblivionPortalBlock::new);
 
     public static final RegistryObject<ChestBlock> CUSTOM_CHEST_BLOCK = BLOCKS.register("custom_chest_block",
             () -> new CustomChestBlock(BlockBehaviour.Properties.copy(Blocks.CHEST)));
-
-    public static final RegistryObject<Block> CAMERA_BLOCK = registerBlockItem("camera_block",
-            () -> new CameraBlock(BlockBehaviour.Properties.copy(Blocks.GLASS).strength(9f)));
 
     // ブロックアイテム作成用メソッド 基本的に触らない
     private static <T extends Block> RegistryObject<T> registerBlockItem(String name, Supplier<T> supplier) {
