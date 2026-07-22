@@ -78,8 +78,14 @@ public class CameraEntity extends Entity {
         cameraYawOffset += deltaX * sensitivity;
         cameraPitchOffset += deltaY * sensitivity;
 
-        //cameraYawOffset = Mth.clamp(cameraYawOffset, -45F, 45F);
-        //cameraPitchOffset = Mth.clamp(cameraPitchOffset, -30F, 30F);
+        // 左右の旋回角度（必要に応じてコメントアウトを解除して制限できます）
+        // cameraYawOffset = Mth.clamp(cameraYawOffset, -45F, 45F);
+
+        // 左右は自由回転（360度 wrap）
+        cameraYawOffset = Mth.wrapDegrees(cameraYawOffset);
+
+        // 【修正】上下のチルト角度制限（上: -45F, 下: 75F）
+        cameraPitchOffset = Mth.clamp(cameraPitchOffset, -45F, 75F);
 
         cameraYawOffset = Mth.wrapDegrees(cameraYawOffset);
 
