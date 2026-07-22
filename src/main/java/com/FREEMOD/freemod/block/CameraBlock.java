@@ -36,9 +36,12 @@ public class CameraBlock extends HorizontalDirectionalBlock {
                     facing = placer.getDirection().getOpposite();
                 }
 
-                // 座標計算の追加
+                // 座標計算の修正
                 double x = pos.getX() + 0.5;
-                double y = pos.getY() + 0.62;
+
+                // 【変更】0.62 から 0.5 に変更して、高さ方向でも中心に合わせます
+                double y = pos.getY() + 0.5;
+
                 double z = pos.getZ() + 0.5;
 
                 double offset = 0.36;
@@ -46,7 +49,6 @@ public class CameraBlock extends HorizontalDirectionalBlock {
                 x += facing.getStepX() * offset;
                 z += facing.getStepZ() * offset;
 
-                // 最後の引数を「0.0F」に修正（float型を明示）
                 camera.moveTo(
                         x,
                         y,
