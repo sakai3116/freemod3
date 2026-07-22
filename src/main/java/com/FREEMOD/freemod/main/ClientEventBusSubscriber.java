@@ -3,7 +3,9 @@ package com.FREEMOD.freemod.main;
 import java.util.Arrays;
 import java.util.List;
 
+import com.FREEMOD.freemod.entity.model.CameraModel;
 import com.FREEMOD.freemod.entity.model.DroneModel;
+import com.FREEMOD.freemod.entity.renderer.CameraRenderer;
 import com.FREEMOD.freemod.entity.renderer.DroneRenderer;
 import com.FREEMOD.freemod.entity.renderer.FastShotSkeletonRenderer;
 import com.FREEMOD.freemod.register.BlockRegister;
@@ -34,6 +36,7 @@ public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event){
         event.registerLayerDefinition(DroneRenderer.DRONE_LAYER, DroneModel::createBodyLayer);
+        event.registerLayerDefinition(CameraRenderer.CAMERA_LAYER, CameraModel::createBodyLayer);
     }
 
     //RegisterRenderersのイベントが走った時にMobのレンダラーを読み込ませる
@@ -41,6 +44,8 @@ public class ClientEventBusSubscriber {
     public static void registerRender(EntityRenderersEvent.RegisterRenderers event){
         event.registerEntityRenderer(EntityRegister.FAST_SHOT_SKELETON.get(), FastShotSkeletonRenderer::new);
         event.registerEntityRenderer(EntityRegister.DRONE.get(), DroneRenderer::new);
+        //event.registerEntityRenderer(EntityRegister.CAMERA.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(EntityRegister.CAMERA.get(), CameraRenderer::new);
     }
 
     private static void animation(FMLClientSetupEvent event){
@@ -72,7 +77,6 @@ public class ClientEventBusSubscriber {
 
                     // portal
 
-
                     // sapling
                     BlockRegister.OBLIVION_SAPLING.get()
             );
@@ -80,7 +84,10 @@ public class ClientEventBusSubscriber {
             List<Block> translucentBlocks = Arrays.asList(
 
                     // fluid
-                    BlockRegister.NEKTAR_LIQUID_BLOCK.get()
+                    BlockRegister.NEKTAR_LIQUID_BLOCK.get(),
+
+                    // glass
+                    BlockRegister.CAMERA_BLOCK.get()
 
             );
 

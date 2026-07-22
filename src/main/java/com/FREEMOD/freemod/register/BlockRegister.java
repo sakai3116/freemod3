@@ -1,5 +1,6 @@
 package com.FREEMOD.freemod.register;
 
+import com.FREEMOD.freemod.block.CameraBlock;
 import com.FREEMOD.freemod.block.CustomChestBlock;
 import com.FREEMOD.freemod.block.StrippedRotatedPillarBlock;
 import com.FREEMOD.freemod.block.fluid.AcidLiquidBlock;
@@ -74,6 +75,9 @@ public class BlockRegister {
                     .strength(5f).requiresCorrectToolForDrops(), UniformInt.of(3,7)));
 
     // other
+    public static final RegistryObject<Block> CAMERA_BLOCK = registerBlockItem("camera_block",
+            () -> new CameraBlock(BlockBehaviour.Properties.of(Material.STONE).strength(9F).noOcclusion()));
+
     public static final RegistryObject<Block> OBLIVION_PORTAL_GATE_BLOCK = registerBlockItem("oblivion_portal_gate_block",
             () -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(9f)));
     public static final RegistryObject<Block> OBLIVION_PORTAL_BLOCK = BLOCKS.register("oblivion_portal", OblivionPortalBlock::new);
