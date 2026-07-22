@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -13,40 +14,36 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Properties;
-
 public class CameraBlock extends HorizontalDirectionalBlock {
     public CameraBlock(Properties properties) {
-        // 1. 親クラス（HorizontalDirectionalBlock）に properties を渡す
         super(properties);
-
-        // 2. ブロックのデフォルト状態として、向き（FACING）を北（NORTH）に初期設定する
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    // ブロックがプレイヤーによって設置された時に呼び出されるバニラのメソッド
+    // 【★追加1】プレイヤーがブロックを置く際、向いている方向（壁の向き）をBlockStateにセットする
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        // プレイヤーが向いている方向の「反対側（＝設置する壁の方向）」を取得
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, net.minecraft.world.item.ItemStack stack) {
         if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
             CameraEntity camera = EntityRegister.CAMERA.get().create(serverLevel);
             if (camera != null) {
-                Direction facing = Direction.NORTH;
-                if (placer != null) {
-                    // 設置したプレイヤーの逆方向（壁側）を取得
-                    facing = placer.getDirection().getOpposite();
-                }
+                // 【★修正2】確定した BlockState から正確な FACING（向き）を取得する
+                Direction facing = state.getValue(FACING);
 
-                // ブロックの「中心」にエンティティを配置（offset計算は削除）
                 double x = pos.getX() + 0.5;
                 double y = pos.getY() + 0.5;
                 double z = pos.getZ() + 0.5;
 
-                // エンティティの初期角度として facing.toYRot() を設定
                 camera.moveTo(
                         x,
                         y,
                         z,
-                        facing.toYRot(),
+                        facing.toYRot(), // BlockStateの向き角度をそのまま設定
                         0.0F
                 );
 
@@ -56,8 +53,6 @@ public class CameraBlock extends HorizontalDirectionalBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
     }
 
-    // 以前のonPlaceメソッドは暴発の原因になるため、まるごと消去するか
-    // super.onPlace だけを呼び出す形にして中身を空にしてください
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         super.onPlace(state, level, pos, oldState, isMoving);
@@ -72,15 +67,13 @@ public class CameraBlock extends HorizontalDirectionalBlock {
         super.onRemove(state, level, pos, newState, isMoving);
     }
 
-    // バニラブロックとしてのモデル描画を無効化し、エンティティモデル（CameraRenderer）側に任せる
     @Override
-    public net.minecraft.world.level.block.RenderShape getRenderShape(net.minecraft.world.level.block.state.BlockState state) {
+    public net.minecraft.world.level.block.RenderShape getRenderShape(BlockState state) {
         return net.minecraft.world.level.block.RenderShape.INVISIBLE;
     }
 
     @Override
     protected void createBlockStateDefinition(net.minecraft.world.level.block.state.StateDefinition.Builder<Block, BlockState> builder) {
-        // ブロックにFACING（向き）のプロパティを登録する
         builder.add(FACING);
     }
 }

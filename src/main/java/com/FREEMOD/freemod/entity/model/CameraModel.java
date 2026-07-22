@@ -84,13 +84,18 @@ public class CameraModel<T extends Entity> extends EntityModel<T> {
 		this.arm.yRot = netHeadYaw * ((float) Math.PI / 180F);
 
 		// 2. カメラ本体（上下チルト）
-		// 【修正】マイナスを外し、headPitch をそのまま正方向でラジアン変換します
 		float pitchRadian = headPitch * ((float) Math.PI / 180F);
 
+		// 【修正】親グループ(camera)だけに角度を適用します
+		// 子要素(cameraCube)への二重適用を削除することで、正確な 1:1 の角度で動くようになります
 		this.camera.xRot = pitchRadian;
-		if (this.cameraCube != null) {
-			this.cameraCube.xRot = pitchRadian;
-		}
+
+        /*
+        // 以下の二重適用処理は削除（コメントアウト）します
+        if (this.cameraCube != null) {
+            this.cameraCube.xRot = pitchRadian;
+        }
+        */
 	}
 
 	@Override

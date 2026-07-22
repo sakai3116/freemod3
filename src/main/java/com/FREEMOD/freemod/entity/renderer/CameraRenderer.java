@@ -29,19 +29,20 @@ public class CameraRenderer extends EntityRenderer<CameraEntity> {
     public void render(CameraEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
 
-        // 【追加1】エンティティが置かれた方角（Yaw）に合わせてモデル全体を回転させる
-        poseStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(-entityYaw));
+        // 【修正】entityYaw(全体角度) ではなく、壁に固定された基準角度(lockYaw) のみでモデル全体を回転させる
+        float baseYaw = entity.getLockYaw();
+        poseStack.mulPose(com.mojang.math.Vector3f.YP.rotationDegrees(-baseYaw));
 
-        // 【追加2】Blockbenchモデルの上下反転補正（EntityModelはデフォルトで上下逆さまになるため）
+        // Blockbenchモデルの上下反転補正
         poseStack.mulPose(com.mojang.math.Vector3f.XP.rotationDegrees(180.0F));
-        poseStack.translate(0.0D, -0.8D, 0.0D); // 高さを合わせる微調整
+        poseStack.translate(0.0D, -0.8D, 0.0D); // 位置の微調整
 
-        // 1. カメラの相対首振り角度を取得（Yaw, Pitch）
-        float yaw = entity.getYawOffset();
-        float pitch = entity.getPitchOffset();
+        // 1. 相対首振り角度（Offset）のみを取得
+        float yawOffset = entity.getYawOffset();
+        float pitchOffset = entity.getPitchOffset();
 
-        // 2. モデルのアニメーション設定に角度を渡す
-        this.model.setupAnim(entity, 0.0F, 0.0F, entity.tickCount + partialTicks, yaw, pitch);
+        // 2. モデルのアニメーション設定に渡す
+        this.model.setupAnim(entity, 0.0F, 0.0F, entity.tickCount + partialTicks, yawOffset, pitchOffset);
 
         // 3. 通常のモデル描画
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
